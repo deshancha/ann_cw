@@ -12,6 +12,8 @@ from domain.manager.idata_loader import IDataLoader
 
 
 class ImagenetteLoaderImp(IDataLoader):
+    """Concrete implementation of IDataLoader for Imagenette dataset."""
+
     def __init__(self, data_dir: str, logger: ILogger):
         self.data_dir = data_dir
         self.logger = logger
