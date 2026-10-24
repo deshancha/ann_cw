@@ -1,0 +1,8 @@
+{
+  "best_val_iou": 0.897,
+  "final_val_iou": 0.897,
+  "final_val_dice": 0.9456,
+  "final_val_loss": 0.119,
+  "final_train_loss": 0.1847,
+  "epochs": 1
+}

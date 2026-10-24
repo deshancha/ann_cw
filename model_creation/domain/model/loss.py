@@ -41,7 +41,7 @@ class BCEDiceLoss(nn.Module):
 def calculate_iou_and_dice(
     logits: torch.Tensor, targets: torch.Tensor, threshold: float = 0.5
 ) -> tuple[float, float]:
-    """Calculates batch mean IoU and Dice score."""
+    """Calculates batch mean IoU and Dice score"""
     with torch.no_grad():
         preds = (torch.sigmoid(logits) > threshold).float()
         preds_flat = preds.view(-1)

@@ -4,3 +4,4 @@ timm
 coremltools
 dependency-injector>=4.41.0
 python-dotenv>=1.0.0
+dvc
