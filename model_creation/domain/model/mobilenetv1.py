@@ -56,7 +56,6 @@ class MobileNetV1Encoder(nn.Module):
 
     # width = 1.0 -> no shrinking and no reducing of num kernels
     def __init__(self, width: float = 1.0):
-        """num_classes=0 -> no classifier (we need this for encoding only for unet)"""
         super().__init__()
         self.width = width
         c = lambda x: max(8, int(x * width))
