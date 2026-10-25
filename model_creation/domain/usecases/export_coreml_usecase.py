@@ -26,13 +26,11 @@ class ExportCoreMLUseCase:
         img_size: int = 224,
         width: float = 1.0,
     ) -> str:
-        self.logger.info(f"Loading checkpoint: {checkpoint_path}")
         model = UNetMobileNetV1(width=width, out_channels=1)
         state_dict = torch.load(checkpoint_path, map_location="cpu", weights_only=True)
         model.load_state_dict(state_dict)
         model.eval()
 
-        self.logger.info(f"Exporting model to CoreML at: {output_path} (size={img_size}x{img_size})")
         self.model_creation.export_coreml(
             model=model,
             filepath=output_path,
