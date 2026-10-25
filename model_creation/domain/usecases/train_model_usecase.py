@@ -43,7 +43,7 @@ class TrainModelUseCase:
         # 1 Load
         self.logger.info(
             f"Loading dataset (img_size={img_size}, batch_size={batch_size}, "
-            f"sample_size={max_train_samples}, val_sample_size={max_val_samples})..."
+            f"sample_size={max_train_samples}, val_sample_size={max_val_samples})"
         )
         train_loader, val_loader = self.data_loader.get_dataloaders(
             img_size=img_size,
@@ -54,7 +54,7 @@ class TrainModelUseCase:
         )
 
         # 2 Build Model
-        self.logger.info(f"Create UNetMobileNetV1, width multiplier: {width}, input_size: {img_size}x{img_size}...")
+        self.logger.info(f"Create UNetMobileNetV1, width multiplier: {width}, input_size: {img_size}x{img_size}")
         model = UNetMobileNetV1(width=width, out_channels=1).to(device)
         optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
         scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=epochs, eta_min=1e-5)

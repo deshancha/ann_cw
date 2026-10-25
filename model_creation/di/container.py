@@ -11,9 +11,11 @@ from data.manager.matting_human_loader_imp import MattingHumanLoaderImp
 from data.manager.model_creation_imp import ModelCreationImp
 
 from domain.usecases.check_timm_usecase import CheckTimmUseCase
-from domain.usecases.train_unet_usecase import TrainUNetUseCase
-from domain.usecases.quick_validation_usecase import QuickValidationUseCase
-from domain.usecases.train_and_validate_full_usecase import TrainAndValidateFullUseCase
+from domain.usecases.train_model_usecase import TrainModelUseCase
+from domain.usecases.validate_model_usecase import ValidateModelUseCase
+from domain.usecases.visualize_validation_result_usecase import VisualizeValidationResultUseCase
+from domain.usecases.export_coreml_usecase import ExportCoreMLUseCase
+from domain.usecases.export_tflite_usecase import ExportTFLiteUseCase
 
 
 class AppContainer(containers.DeclarativeContainer):
@@ -50,21 +52,40 @@ class AppContainer(containers.DeclarativeContainer):
         logger=logger,
     )
 
-    train_unet_usecase = providers.Factory(
-        TrainUNetUseCase,
+    # Step 1: Train model & save checkpoints
+    train_model_usecase = providers.Factory(
+        TrainModelUseCase,
         data_loader=matting_human_loader,
+        model_creation=model_creation,
         logger=logger,
     )
 
-    quick_validation_usecase = providers.Factory(
-        QuickValidationUseCase,
+    # Step 2: Validate checkpoint & save metrics.json
+    validate_model_usecase = providers.Factory(
+        ValidateModelUseCase,
         data_loader=matting_human_loader,
+        model_creation=model_creation,
         logger=logger,
     )
 
-    train_and_validate_full_usecase = providers.Factory(
-        TrainAndValidateFullUseCase,
+    # Step 3: Visualize validation result
+    visualize_validation_result_usecase = providers.Factory(
+        VisualizeValidationResultUseCase,
         data_loader=matting_human_loader,
+        model_creation=model_creation,
+        logger=logger,
+    )
+
+    # Step 4: Export Apple CoreML (.mlpackage)
+    export_coreml_usecase = providers.Factory(
+        ExportCoreMLUseCase,
+        model_creation=model_creation,
+        logger=logger,
+    )
+
+    # Step 5: Export TensorFlow Lite (.tflite)
+    export_tflite_usecase = providers.Factory(
+        ExportTFLiteUseCase,
         model_creation=model_creation,
         logger=logger,
     )

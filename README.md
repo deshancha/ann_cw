@@ -25,4 +25,12 @@ From ios app side
 sh ./config/dvc_get.sh v1.1
 ```
 
-
+```
+source .venv/bin/activate
+python model_creation/main.py --env .env.quick --task train
+python model_creation/main.py --env .env.quick --task validate
+python model_creation/main.py --env .env.quick --task visualize
+python model_creation/main.py --env .env.quick --task export_coreml
+python model_creation/main.py --env .env.quick --task export_tflite
+python model_creation/main.py --env .env.quick --task pipeline
+```

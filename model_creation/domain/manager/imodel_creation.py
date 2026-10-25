@@ -8,7 +8,6 @@ from torch.utils.data import DataLoader
 
 
 class IModelCreation(ABC):
-    """Interface for model training, validation, and export operations."""
 
     @abstractmethod
     def train_epoch(
@@ -35,12 +34,23 @@ class IModelCreation(ABC):
 
     @abstractmethod
     def save_checkpoint(self, model: torch.nn.Module, filepath: str) -> None:
-        """Saves model state dict."""
+        """Saves model state dict"""
         pass
 
     @abstractmethod
     def export_coreml(self, model: torch.nn.Module, filepath: str, img_size: int) -> None:
         """PyTorch model -> Apple CoreML"""
+        pass
+
+    @abstractmethod
+    def export_tflite(
+        self,
+        model: torch.nn.Module,
+        filepath: str,
+        img_size: int = 256,
+        in_nhwc: bool = True,
+    ) -> None:
+        """PyTorch model -> TensorFlow Lite"""
         pass
 
     @abstractmethod
