@@ -83,9 +83,18 @@ class PersonSegmentationLoaderImp(ISegmentationLoader):
         os.makedirs(self.data_dir, exist_ok=True)
 
     def get_dataloaders(
-        self, img_size: int, batch_size: int, val_split: float = 0.2
+        self,
+        img_size: int,
+        batch_size: int,
+        val_split: float = 0.2,
+        max_train_samples: int = 0,
+        max_val_samples: int = 0,
     ) -> Tuple[DataLoader, DataLoader]:
-        self.logger.info(f"Person Segmentation Loader init (img_size={img_size}, batch_size={batch_size})")
+        self.logger.info(
+            f"Person Segmentation Loader init (img_size={img_size}, batch_size={batch_size}, "
+            f"max_train={max_train_samples}, max_val={max_val_samples})"
+        )
+
 
         # Normalization mean 0.5, std 0.5 (scaling to [-1, 1] MobileNet need)
         norm = transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
@@ -126,7 +135,17 @@ class PersonSegmentationLoaderImp(ISegmentationLoader):
         val_imgs = [image_paths[i] for i in val_indices]
         val_masks = [mask_paths[i] for i in val_indices]
 
+        # Apply subset limits if specified (> 0)
+        if max_train_samples and max_train_samples > 0:
+            train_imgs = train_imgs[:max_train_samples]
+            train_masks = train_masks[:max_train_samples]
+
+        if max_val_samples and max_val_samples > 0:
+            val_imgs = val_imgs[:max_val_samples]
+            val_masks = val_masks[:max_val_samples]
+
         train_ds = PersonSegmentationDataset(
+
             image_paths=train_imgs,
             mask_paths=train_masks,
             img_size=img_size,

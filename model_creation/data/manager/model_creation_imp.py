@@ -4,7 +4,6 @@
 import os
 from typing import Tuple
 import numpy as np
-import coremltools as ct
 from PIL import Image, ImageFilter
 import torch
 from torch.utils.data import DataLoader
@@ -13,6 +12,12 @@ from core.util.logger import ILogger
 from domain.manager.imodel_creation import IModelCreation
 from domain.model.loss import calculate_iou_and_dice
 
+import onnx2tf
+import onnx2tf.onnx2tf as otf
+import onnx2tf.utils.common_functions as cf
+import coremltools as ct
+import glob
+import shutil
 
 class ModelCreationImp(IModelCreation):
     
@@ -94,6 +99,8 @@ class ModelCreationImp(IModelCreation):
         example_input = torch.rand(1, 3, img_size, img_size)
         traced_model = torch.jit.trace(wrapped_model, example_input)
 
+        
+
         mlmodel = ct.convert(
             traced_model,
             inputs=[
@@ -117,7 +124,16 @@ class ModelCreationImp(IModelCreation):
 
         os.makedirs(os.path.dirname(os.path.abspath(filepath)), exist_ok=True)
         mlmodel.save(filepath)
-        self.logger.info(f"Apple CoreML model package saved successfully: {filepath}")
+        self.logger.info(f"Apple CoreML model saved: {filepath}")
+
+    def export_tflite(
+        self,
+        model: torch.nn.Module,
+        filepath: str,
+        img_size: int = 256,
+        in_nhwc: bool = True,
+    ) -> None:
+        pass
 
     def generate_validation_image(
         self,
