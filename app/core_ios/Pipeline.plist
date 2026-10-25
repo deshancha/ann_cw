@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>VIDEO_SEND_PORT</key>
+	<string>1345</string>
+	<key>VIDEO_SEND_PORT_2</key>
+	<string>1346</string>
+	<key>VIDEO_RECEIVE_PORT</key>
+	<string>1345</string>
+	<key>VIDEO_RECEIVE_PORT_2</key>
+	<string>1346</string>
+	<key>PL_SENDER_VIDEO_NOSINK_T</key>
+	<string>avfvideosrc device-index=1 ! video/x-raw,width=1280,height=720,framerate=30/1 ! videoconvert ! video/x-raw,format=NV12 ! vtenc_h264 realtime=true bitrate=1000 ! rtph264pay config-interval=1 ! application/x-rtp,payload=(int)103,ssrc=(uint)112233,media=video  ! tee name=video_tee ! udpsink port=%@ host=%@  sync=false async=false video_tee. ! udpsink port=%@ host=%@</string>
+	<key>PL_RECEIVER_VIDEO_APPSINK</key>
+	<string>udpsrc port=%@ ! application/x-rtp,media=(string)video ! rtpjitterbuffer drop-on-latency=true latency=300 ! rtph264depay name=vr0_depay ! h264parse  ! decodebin  ! videoconvert ! video/x-raw,format=NV12 ! appsink name=sink sync=false</string>
+	<key>PL_RECEIVER_VIDEO_APPSINK_RGB</key>
+	<string>udpsrc port=%@ ! application/x-rtp,media=(string)video ! rtpjitterbuffer drop-on-latency=true latency=300 ! rtph264depay name=vr0_depay ! h264parse  ! decodebin  ! videoscale method=0 ! video/x-raw,width=256,height=256 ! videoconvert ! video/x-raw,format=RGB ! rotate angle=3.14159 ! appsink name=sink sync=false</string>
+</dict>
+</plist>
