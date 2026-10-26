@@ -1,6 +1,6 @@
 {
-  "val_loss": 0.0331,
-  "val_iou": 0.972,
-  "val_dice": 0.9858,
-  "checkpoint": "unet_mobilenetv3_best.pt"
+  "val_loss": 0.0551,
+  "val_iou": 0.9523,
+  "val_dice": 0.9755,
+  "checkpoint": "unet_mobilenetv1_best.pt"
 }
