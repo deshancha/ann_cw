@@ -15,6 +15,6 @@
 	<key>PL_RECEIVER_VIDEO_APPSINK</key>
 	<string>udpsrc port=%@ ! application/x-rtp,media=(string)video ! rtpjitterbuffer drop-on-latency=true latency=300 ! rtph264depay name=vr0_depay ! h264parse  ! decodebin  ! videoconvert ! video/x-raw,format=NV12 ! appsink name=sink sync=false</string>
 	<key>PL_RECEIVER_VIDEO_APPSINK_RGB</key>
-	<string>udpsrc port=%@ ! application/x-rtp,media=(string)video ! rtpjitterbuffer drop-on-latency=true latency=300 ! rtph264depay name=vr0_depay ! h264parse  ! decodebin  ! videoscale method=0 ! video/x-raw,width=256,height=256 ! videoconvert ! video/x-raw,format=RGB ! rotate angle=3.14159 ! appsink name=sink sync=false</string>
+	<string>udpsrc port=%@ ! application/x-rtp,media=(string)video ! rtpjitterbuffer drop-on-latency=true latency=300 ! rtph264depay name=vr0_depay ! h264parse  ! decodebin  ! videoconvert ! videocrop left=280 right=280 ! videoscale method=1 ! video/x-raw,width=256,height=256 ! videoconvert ! video/x-raw,format=RGB ! rotate angle=3.14159 ! appsink name=sink sync=false</string>
 </dict>
 </plist>
