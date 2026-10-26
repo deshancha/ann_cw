@@ -83,15 +83,24 @@ void main()
     lowp vec3 finalFragColor = processedFragColor;
     
     if (enableMask > 1.0) {
-        // Correct Mask Rotation
-        vec2 rotatedMaskTextureCoordinates = getTotatedTextureCoordAround(texCoords, 180.0, 0.5, 0.5);
+        /* We crop  frame for aspect ratio maintain in gst RGB pipeline before inferencing
+         * Without a noticed failure to proper human contour isolation in core ml
+         * Frame is 720x720 originally 1280 x 720 and crop left=280, right=280
+         * Now left margin: 280/1280 = 0.21875, right: (1280-280)/1280 = 0.78125, span = 0.5625
+        */
+        float maskU = (texCoords.x - 0.21875) / 0.5625;
+        float maskVal = 0.0;
         
-        lowp vec4 rgba = texture2D(SamplerTextureMask, rotatedMaskTextureCoordinates);
-        
-        // Single channel texture (GL_RED_EXT / GL_LUMINANCE mask may be in .r)
-        float maskVal = rgba.r;
-        if (maskVal == 0.0 && rgba.a > 0.0 && rgba.a < 1.0) {
-            maskVal = rgba.a;
+        if (maskU >= 0.0 && maskU <= 1.0) {
+            vec2 maskCoord = vec2(maskU, texCoords.y);
+            vec2 rotatedMaskTextureCoordinates = getTotatedTextureCoordAround(maskCoord, 180.0, 0.5, 0.5);
+            lowp vec4 rgba = texture2D(SamplerTextureMask, rotatedMaskTextureCoordinates);
+            
+            // Single channel texture (GL_RED_EXT / GL_LUMINANCE mask may be in .r)
+            maskVal = rgba.r;
+            if (maskVal == 0.0 && rgba.a > 0.0 && rgba.a < 1.0) {
+                maskVal = rgba.a;
+            }
         }
         
         // Display Mask and return
