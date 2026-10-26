@@ -33,8 +33,16 @@ git tag -a v1.1 -m "v1.1 weights"
 git push origin developer --tags
 ```
 
-# Pull model via DVC
+# Fetch Model via Hugging Face Hub
+
+Models are hosted on [Hugging Face: deshanc/unet-mobilenet-portrait-segmentation](https://huggingface.co/deshanc/unet-mobilenet-portrait-segmentation).
+
+Download and prepare the CoreML model for the iOS app without needing DVC or credentials:
 
 ```bash
-sh ./app/config/dvc_get.sh v1.3    # app/core_ios/Model/UNetMobileNetFull.mlpackage
+# Fetch latest/v1.3 (default):
+sh ./app/config/hf_get.sh
+
+# Or fetch a specific version (v1.0, v1.1, v1.2, v1.3):
+sh ./app/config/hf_get.sh v1.2    #app/core_ios/Model/UNetMobileNetFull.mlpackage
 ```
