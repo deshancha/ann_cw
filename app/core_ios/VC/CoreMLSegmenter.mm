@@ -6,7 +6,7 @@
 //
 
 #import "CoreMLSegmenter.h"
-#import "UNetMobileNetV1Full.h"
+#import "UNetMobileNetFull.h"
 
 @interface CoreMLSegmenter () {
   VNCoreMLModel *_visionModel;
@@ -34,8 +34,8 @@
   MLModel *mlModel = nil;
 
   // 1. Try loading via Xcode-generated wrapper class
-  UNetMobileNetV1Full *wrapper =
-      [[UNetMobileNetV1Full alloc] initWithConfiguration:config error:&error];
+  UNetMobileNetFull *wrapper =
+      [[UNetMobileNetFull alloc] initWithConfiguration:config error:&error];
   if (wrapper && wrapper.model) {
     mlModel = wrapper.model;
   }
@@ -43,7 +43,7 @@
   // 2. Fallback to compiled bundle resource if wrapper failed
   if (!mlModel) {
     NSURL *modelURL =
-        [[NSBundle mainBundle] URLForResource:@"UNetMobileNetV1Full"
+        [[NSBundle mainBundle] URLForResource:@"UNetMobileNetFull"
                                 withExtension:@"mlmodelc"];
     if (modelURL) {
       mlModel = [MLModel modelWithContentsOfURL:modelURL
@@ -53,7 +53,7 @@
   }
 
   if (!mlModel) {
-    NSLog(@"[CoreMLSegmenter] Failed to load UNetMobileNetV1Full model: %@",
+    NSLog(@"[CoreMLSegmenter] Failed to load UNetMobileNetFull model: %@",
           error);
     return NO;
   }
@@ -67,7 +67,7 @@
   _coreMLRequest = [[VNCoreMLRequest alloc] initWithModel:_visionModel];
   _coreMLRequest.imageCropAndScaleOption = VNImageCropAndScaleOptionScaleFill;
 
-  NSLog(@"[CoreMLSegmenter] Successfully initialized UNetMobileNetV1Full "
+  NSLog(@"[CoreMLSegmenter] Successfully initialized UNetMobileNetFull "
         @"CoreML engine on ANE/GPU");
   return YES;
 }

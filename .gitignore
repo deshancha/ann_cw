@@ -221,5 +221,6 @@ __marimo__/
 /data
 /model_creation/output/checkpoints
 /model_creation/output/gen_images
+app/core_ios/Model/*.mlpackage
 Local
 .DS_Store

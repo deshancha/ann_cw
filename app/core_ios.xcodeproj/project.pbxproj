@@ -70,7 +70,7 @@
 		E227F322308E148C004FBAC5 /* GStreamer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E227F321308E148C004FBAC5 /* GStreamer.framework */; };
 		E227F325308E14B8004FBAC5 /* GStreamer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E227F321308E148C004FBAC5 /* GStreamer.framework */; };
 		E227F328308E25C2004FBAC5 /* PlayerVCCamera.mm in Sources */ = {isa = PBXBuildFile; fileRef = E227F327308E25C2004FBAC5 /* PlayerVCCamera.mm */; };
-		E227F331308E3000004FBAC5 /* UNetMobileNetV1Full.mlpackage in Sources */ = {isa = PBXBuildFile; fileRef = E227F330308E3000004FBAC5 /* UNetMobileNetV1Full.mlpackage */; };
+		E227F331308E3000004FBAC5 /* UNetMobileNetFull.mlpackage in Sources */ = {isa = PBXBuildFile; fileRef = E227F330308E3000004FBAC5 /* UNetMobileNetFull.mlpackage */; };
 		E227F334308E4000004FBAC5 /* CoreMLSegmenter.mm in Sources */ = {isa = PBXBuildFile; fileRef = E227F333308E4000004FBAC5 /* CoreMLSegmenter.mm */; };
 /* End PBXBuildFile section */
 
@@ -177,7 +177,7 @@
 		707AB78426B146FE0026AF00 /* GSPDecoratorAppsink.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GSPDecoratorAppsink.cpp; sourceTree = "<group>"; };
 		E227F321308E148C004FBAC5 /* GStreamer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GStreamer.framework; path = ../../../development/GStreamer.framework; sourceTree = "<group>"; };
 		E227F327308E25C2004FBAC5 /* PlayerVCCamera.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = PlayerVCCamera.mm; sourceTree = "<group>"; };
-		E227F330308E3000004FBAC5 /* UNetMobileNetV1Full.mlpackage */ = {isa = PBXFileReference; lastKnownFileType = folder.mlpackage; path = UNetMobileNetV1Full.mlpackage; sourceTree = "<group>"; };
+		E227F330308E3000004FBAC5 /* UNetMobileNetFull.mlpackage */ = {isa = PBXFileReference; lastKnownFileType = folder.mlpackage; path = UNetMobileNetFull.mlpackage; sourceTree = "<group>"; };
 		E227F332308E4000004FBAC5 /* CoreMLSegmenter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CoreMLSegmenter.h; sourceTree = "<group>"; };
 		E227F333308E4000004FBAC5 /* CoreMLSegmenter.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = CoreMLSegmenter.mm; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -428,7 +428,7 @@
 		706320E127B10CFA0058FC51 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				E227F330308E3000004FBAC5 /* UNetMobileNetV1Full.mlpackage */,
+				E227F330308E3000004FBAC5 /* UNetMobileNetFull.mlpackage */,
 				706320E827B10CFA0058FC51 /* AppLog.cpp */,
 				706320E527B10CFA0058FC51 /* AppLog.h */,
 			);
@@ -601,7 +601,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E227F331308E3000004FBAC5 /* UNetMobileNetV1Full.mlpackage in Sources */,
+				E227F331308E3000004FBAC5 /* UNetMobileNetFull.mlpackage in Sources */,
 				701925E827C1794F00B3580C /* AppLog.cpp in Sources */,
 				E227F328308E25C2004FBAC5 /* PlayerVCCamera.mm in Sources */,
 				701925EE27C1794F00B3580C /* MLContour.mm in Sources */,
