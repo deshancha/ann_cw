@@ -8,7 +8,7 @@ import torch
 from core.util.logger import ILogger
 from domain.manager.isegmentation_loader import ISegmentationLoader
 from domain.manager.imodel_creation import IModelCreation
-from domain.model.unet_mobilenet import UNetMobileNetV1
+from domain.model.model_factory import build_segmentation_model
 
 # crearte image with original | mask | gen mask | Blurred fro mtrained model
 class VisualizeValidationResultUseCase:
@@ -26,6 +26,7 @@ class VisualizeValidationResultUseCase:
     def execute(
         self,
         checkpoint_path: str,
+        model_type: str = "mobilenetv3",
         img_size: int = 224,
         width: float = 1.0,
         device: str = "mps",
@@ -41,7 +42,12 @@ class VisualizeValidationResultUseCase:
             max_val_samples=20,
         )
 
-        model = UNetMobileNetV1(width=width, out_channels=1).to(device)
+        model = build_segmentation_model(
+            model_type=model_type,
+            width=width,
+            pretrained=False,
+            out_channels=1,
+        ).to(device)
         state_dict = torch.load(checkpoint_path, map_location=device, weights_only=True)
         model.load_state_dict(state_dict)
         model.eval()

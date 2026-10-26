@@ -9,7 +9,7 @@ import torch
 from core.util.logger import ILogger
 from domain.manager.isegmentation_loader import ISegmentationLoader
 from domain.manager.imodel_creation import IModelCreation
-from domain.model.unet_mobilenet import UNetMobileNetV1
+from domain.model.model_factory import build_segmentation_model
 from domain.model.loss import BCEDiceLoss
 
 # Evaluate the model ans asave dvc matrics
@@ -28,6 +28,7 @@ class ValidateModelUseCase:
     def execute(
         self,
         checkpoint_path: str,
+        model_type: str = "mobilenetv3",
         batch_size: int = 16,
         img_size: int = 224,
         width: float = 1.0,
@@ -48,8 +49,13 @@ class ValidateModelUseCase:
         )
 
         # 2 Load Model
-        self.logger.info(f"Loading model from: {checkpoint_path}")
-        model = UNetMobileNetV1(width=width, out_channels=1).to(device)
+        self.logger.info(f"Loading {model_type} model from: {checkpoint_path}")
+        model = build_segmentation_model(
+            model_type=model_type,
+            width=width,
+            pretrained=False,
+            out_channels=1,
+        ).to(device)
         state_dict = torch.load(checkpoint_path, map_location=device, weights_only=True)
         model.load_state_dict(state_dict)
         model.eval()

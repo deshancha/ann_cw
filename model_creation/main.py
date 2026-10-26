@@ -43,6 +43,7 @@ def main():
     load_dotenv(dotenv_path=env_file, override=True)
 
     cfg = {
+        "model_type": os.getenv("MODEL_TYPE", "mobilenetv3"),
         "epochs": int(os.getenv("EPOCHS", "3")),
         "batch_size": int(os.getenv("BATCH_SIZE", "16")),
         "learning_rate": float(os.getenv("LEARNING_RATE", "0.001")),
@@ -73,12 +74,14 @@ def main():
     container.config.from_dict({"training": cfg})
 
     loader = container.matting_human_loader()
-    best_pt_path = os.path.join(cfg["checkpoints_dir"], "unet_mobilenetv1_full_best.pt")
+    model_type = cfg["model_type"]
+    best_pt_path = os.path.join(cfg["checkpoints_dir"], f"unet_{model_type}_best.pt")
 
     # 1: Train
     if args.task == "train":
         usecase = container.train_model_usecase(data_loader=loader)
         usecase.execute(
+            model_type=model_type,
             epochs=cfg["epochs"],
             batch_size=cfg["batch_size"],
             learning_rate=cfg["learning_rate"],
@@ -96,6 +99,7 @@ def main():
         usecase = container.validate_model_usecase(data_loader=loader)
         usecase.execute(
             checkpoint_path=best_pt_path,
+            model_type=model_type,
             batch_size=cfg["batch_size"],
             img_size=cfg["img_size"],
             width=cfg["width"],
@@ -109,6 +113,7 @@ def main():
         usecase = container.visualize_validation_result_usecase(data_loader=loader)
         usecase.execute(
             checkpoint_path=best_pt_path,
+            model_type=model_type,
             img_size=cfg["img_size"],
             width=cfg["width"],
             device=cfg["device"],
@@ -118,10 +123,11 @@ def main():
     # 4: Export CoreML
     elif args.task == "export_coreml":
         usecase = container.export_coreml_usecase()
-        ml_path = os.path.join(cfg["checkpoints_dir"], "UNetMobileNetV1Full.mlpackage")
+        ml_path = os.path.join(cfg["checkpoints_dir"], f"UNet_{model_type}.mlpackage")
         usecase.execute(
             checkpoint_path=best_pt_path,
             output_path=ml_path,
+            model_type=model_type,
             img_size=cfg["img_size"],
             width=cfg["width"],
         )
@@ -129,19 +135,21 @@ def main():
     # 5: Export TFLite
     elif args.task == "export_tflite":
         usecase = container.export_tflite_usecase()
-        tflite_path = os.path.join(cfg["checkpoints_dir"], "mobilenet_v3_segm_256.tflite")
+        tflite_path = os.path.join(cfg["checkpoints_dir"], f"{model_type}_segm_256.tflite")
         usecase.execute(
             checkpoint_path=best_pt_path,
             output_path=tflite_path,
+            model_type=model_type,
             img_size=256,
             width=cfg["width"],
         )
 
     # All: 1 -> 2 -> 3 -> 4 -> 5
     elif args.task == "pipeline":
-        print("-------------- Train Model----------------\n")
+        print(f"-------------- Train Model ({model_type}) ----------------\n")
         train_uc = container.train_model_usecase(data_loader=loader)
         train_res = train_uc.execute(
+            model_type=model_type,
             epochs=cfg["epochs"],
             batch_size=cfg["batch_size"],
             learning_rate=cfg["learning_rate"],
@@ -156,10 +164,11 @@ def main():
 
         pt_to_use = train_res["best_pt"]
 
-        print("-------------- Validate Model--------------\n")
+        print(f"-------------- Validate Model ({model_type}) --------------\n")
         val_uc = container.validate_model_usecase(data_loader=loader)
         val_uc.execute(
             checkpoint_path=pt_to_use,
+            model_type=model_type,
             batch_size=cfg["batch_size"],
             img_size=cfg["img_size"],
             width=cfg["width"],
@@ -168,32 +177,35 @@ def main():
             max_val_samples=cfg["max_val_samples"],
         )
 
-        print("-------------- Visualize Validation Result--------------\n")
+        print(f"-------------- Visualize Validation Result ({model_type}) --------------\n")
         vis_uc = container.visualize_validation_result_usecase(data_loader=loader)
         vis_uc.execute(
             checkpoint_path=pt_to_use,
+            model_type=model_type,
             img_size=cfg["img_size"],
             width=cfg["width"],
             device=cfg["device"],
             output_dir=cfg["output_dir"],
         )
 
-        print("-------------- Export Apple CoreML--------------\n")
+        print(f"-------------- Export Apple CoreML ({model_type}) --------------\n")
         coreml_uc = container.export_coreml_usecase()
-        ml_path = os.path.join(cfg["checkpoints_dir"], "UNetMobileNetV1Full.mlpackage")
+        ml_path = os.path.join(cfg["checkpoints_dir"], f"UNet_{model_type}.mlpackage")
         coreml_uc.execute(
             checkpoint_path=pt_to_use,
             output_path=ml_path,
+            model_type=model_type,
             img_size=cfg["img_size"],
             width=cfg["width"],
         )
 
-        print("-------------- Export TensorFlow Lite--------------\n")
+        print(f"-------------- Export TensorFlow Lite ({model_type}) --------------\n")
         tflite_uc = container.export_tflite_usecase()
-        tflite_path = os.path.join(cfg["checkpoints_dir"], "mobilenet_v3_segm_256.tflite")
+        tflite_path = os.path.join(cfg["checkpoints_dir"], f"{model_type}_segm_256.tflite")
         tflite_uc.execute(
             checkpoint_path=pt_to_use,
             output_path=tflite_path,
+            model_type=model_type,
             img_size=256,
             width=cfg["width"],
         )

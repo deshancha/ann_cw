@@ -9,7 +9,7 @@ import torch
 from core.util.logger import ILogger
 from domain.manager.isegmentation_loader import ISegmentationLoader
 from domain.manager.imodel_creation import IModelCreation
-from domain.model.unet_mobilenet import UNetMobileNetV1
+from domain.model.model_factory import build_segmentation_model
 from domain.model.loss import BCEDiceLoss
 
 # Train UNetMobileNetV1 and save checkpoint
@@ -26,6 +26,7 @@ class TrainModelUseCase:
 
     def execute(
         self,
+        model_type: str = "mobilenetv3",
         epochs: int = 3,
         batch_size: int = 16,
         learning_rate: float = 0.001,
@@ -54,14 +55,19 @@ class TrainModelUseCase:
         )
 
         # 2 Build Model
-        self.logger.info(f"Create UNetMobileNetV1, width multiplier: {width}, input_size: {img_size}x{img_size}")
-        model = UNetMobileNetV1(width=width, out_channels=1).to(device)
+        self.logger.info(f"Create segmentation model: {model_type}, width: {width}, input_size: {img_size}x{img_size}")
+        model = build_segmentation_model(
+            model_type=model_type,
+            width=width,
+            pretrained=True,
+            out_channels=1,
+        ).to(device)
         optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
         scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=epochs, eta_min=1e-5)
         loss_fn = BCEDiceLoss(bce_weight=0.5, dice_weight=0.5)
 
         best_val_iou = 0.0
-        best_pt_path = os.path.join(checkpoints_dir, "unet_mobilenetv1_full_best.pt")
+        best_pt_path = os.path.join(checkpoints_dir, f"unet_{model_type}_best.pt")
         history = {"train_loss": [], "val_loss": [], "val_iou": [], "val_dice": []}
 
         # 3 Training
@@ -104,7 +110,7 @@ class TrainModelUseCase:
                 self.logger.info(f"So far best model - Validation IoU: {val_iou})")
 
         # 4 Save Last Weights
-        final_pt_path = os.path.join(checkpoints_dir, "unet_mobilenetv1_full_final.pt")
+        final_pt_path = os.path.join(checkpoints_dir, f"unet_{model_type}_final.pt")
         self.model_creation.save_checkpoint(model, final_pt_path)
 
         return {

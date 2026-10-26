@@ -6,8 +6,8 @@ Notes
 import torch
 import torch.nn as nn
 
-from domain.model.mobilenetv1 import MobileNetV1Encoder
-from domain.model.unet_decoder import UNetDecoder
+from domain.model.mobilenetv1.mobilenetv1 import MobileNetV1Encoder
+from domain.model.mobilenetv1.unet_decoder import UNetDecoder
 
 
 class UNetMobileNetV1(nn.Module):

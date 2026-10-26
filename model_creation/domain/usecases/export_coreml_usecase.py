@@ -7,7 +7,7 @@ import torch
 
 from core.util.logger import ILogger
 from domain.manager.imodel_creation import IModelCreation
-from domain.model.unet_mobilenet import UNetMobileNetV1
+from domain.model.model_factory import build_segmentation_model
 
 class ExportCoreMLUseCase:
     
@@ -23,10 +23,16 @@ class ExportCoreMLUseCase:
         self,
         checkpoint_path: str,
         output_path: str,
+        model_type: str = "mobilenetv3",
         img_size: int = 224,
         width: float = 1.0,
     ) -> str:
-        model = UNetMobileNetV1(width=width, out_channels=1)
+        model = build_segmentation_model(
+            model_type=model_type,
+            width=width,
+            pretrained=False,
+            out_channels=1,
+        )
         state_dict = torch.load(checkpoint_path, map_location="cpu", weights_only=True)
         model.load_state_dict(state_dict)
         model.eval()
