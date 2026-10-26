@@ -224,3 +224,43 @@ __marimo__/
 app/core_ios/Model/*.mlpackage
 Local
 .DS_Store
+
+# ==============================================================================
+# Xcode / iOS
+# ==============================================================================
+# User data, workspace state, breakpoints
+xcuserdata/
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+
+# Xcode build products & derived data
+DerivedData/
+.build/
+
+# Debug symbols & app archives
+*.dSYM/
+*.dSYM.zip
+*.ipa
+
+# Xcode workspace and project extras
+*.moved-aside
+*.xccheckout
+*.xcscmblueprint
+*.hmap
+
+# Dependency managers (CocoaPods, Carthage)
+Pods/
+Carthage/Build/
+
+# Fastlane test reports and screenshots
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots
+fastlane/test_output
+

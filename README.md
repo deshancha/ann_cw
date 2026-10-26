@@ -23,6 +23,7 @@ python model_creation/main.py --env .env.quick --task pipeline
 # Train model -> matix create at matrics dir
 
 ```
+source .venv/bin/activate
 dvc add model_creation/output/checkpoints
 dvc push
 
