@@ -12,7 +12,7 @@ from domain.manager.imodel_creation import IModelCreation
 from domain.model.model_factory import build_segmentation_model
 from domain.model.loss import BCEDiceLoss
 
-# Evaluate the model ans asave dvc matrics
+# Evaluate the model and save metrics
 class ValidateModelUseCase:
     
     def __init__(
@@ -62,7 +62,7 @@ class ValidateModelUseCase:
 
         loss_fn = BCEDiceLoss(bce_weight=0.5, dice_weight=0.5)
 
-        # 3 Validate, this is mode lvalidation for saving matix data for dvc checkout
+        # 3 Validate model and compute evaluation metrics
         val_loss, val_iou, val_dice = self.model_creation.validate(
             model=model,
             val_loader=val_loader,

@@ -5,6 +5,4 @@ coremltools
 dependency-injector>=4.41.0
 python-dotenv>=1.0.0
 huggingface_hub>=0.20.0
-dvc
-dvc-gdrive
 

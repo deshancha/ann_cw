@@ -1,5 +1,0 @@
-[core]
-    autostage = true
-    remote = local_storage
-['remote "local_storage"']
-    url = /Users/chamikadeshan/.dvc_storage/ann_cw

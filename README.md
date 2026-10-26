@@ -1,12 +1,6 @@
 # ann_cw
-CNN Unet+mobilenetv1 with apple core ml backed segmentation
-
-# Important stuff at begning 
-
-```
-source .venv/bin/activate
-caffeinate -i python model_creation/main.py --task train_full --dataset matting_human --epochs 1
-```
+- CNN Unet+mobilenetv1 with apple core ml backed segmentation. 
+- UNet + Mobilenetv3 transfer learning
 
 # Run MODEL creation
 
