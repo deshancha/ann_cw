@@ -89,18 +89,22 @@ void main()
          * Now left margin: 280/1280 = 0.21875, right: (1280-280)/1280 = 0.78125, span = 0.5625
         */
         float maskU = (texCoords.x - 0.21875) / 0.5625;
-        float maskVal = 0.0;
         
-        if (maskU >= 0.0 && maskU <= 1.0) {
-            vec2 maskCoord = vec2(maskU, texCoords.y);
-            vec2 rotatedMaskTextureCoordinates = getTotatedTextureCoordAround(maskCoord, 180.0, 0.5, 0.5);
-            lowp vec4 rgba = texture2D(SamplerTextureMask, rotatedMaskTextureCoordinates);
-            
-            // Single channel texture (GL_RED_EXT / GL_LUMINANCE mask may be in .r)
-            maskVal = rgba.r;
-            if (maskVal == 0.0 && rgba.a > 0.0 && rgba.a < 1.0) {
-                maskVal = rgba.a;
-            }
+        // area out of mask we set black
+        if (maskU < 0.0 || maskU > 1.0) {
+            gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
+            return;
+        }
+        
+        float maskVal = 0.0;
+        vec2 maskCoord = vec2(maskU, texCoords.y);
+        vec2 rotatedMaskTextureCoordinates = getTotatedTextureCoordAround(maskCoord, 180.0, 0.5, 0.5);
+        lowp vec4 rgba = texture2D(SamplerTextureMask, rotatedMaskTextureCoordinates);
+        
+        // Single channel texture (GL_RED_EXT / GL_LUMINANCE mask may be in .r)
+        maskVal = rgba.r;
+        if (maskVal == 0.0 && rgba.a > 0.0 && rgba.a < 1.0) {
+            maskVal = rgba.a;
         }
         
         // Display Mask and return
