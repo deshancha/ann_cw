@@ -1,8 +1,6 @@
 {
-  "best_val_iou": 0.9645,
-  "final_val_iou": 0.9644,
-  "final_val_dice": 0.9818,
-  "final_val_loss": 0.0419,
-  "final_train_loss": 0.0244,
-  "epochs": 15
+  "val_loss": 0.0331,
+  "val_iou": 0.972,
+  "val_dice": 0.9858,
+  "checkpoint": "unet_mobilenetv3_best.pt"
 }
