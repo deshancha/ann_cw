@@ -133,7 +133,66 @@ class ModelCreationImp(IModelCreation):
         img_size: int = 256,
         in_nhwc: bool = True,
     ) -> None:
-        pass
+        class TFLiteWrapper(torch.nn.Module):
+            def __init__(self, unet: torch.nn.Module):
+                super().__init__()
+                self.unet = unet
+
+            def forward(self, x: torch.Tensor) -> torch.Tensor:
+                # C++ ISegmentProcessTFL  NHWC [1, H, W, 3] in [0.0, 1.0]
+                x = x.permute(0, 3, 1, 2)  # NHWC -> NCHW
+                x = x * 2.0 - 1.0  # [0, 1] -> [-1, 1] MobileNet normalization
+                logits = self.unet(x)
+                probs = torch.sigmoid(logits)
+                probs = probs.permute(0, 2, 3, 1)  # NCHW -> NHWC [1, H, W, 1]
+                return probs
+
+        wrapped_model = TFLiteWrapper(model).eval().cpu()
+        dummy_input = torch.rand(1, img_size, img_size, 3)
+
+        # 1 Export temporary ONNX
+        temp_dir = os.path.join(os.path.dirname(os.path.abspath(filepath)), "_tflite_temp")
+        os.makedirs(temp_dir, exist_ok=True)
+        temp_onnx = os.path.join(temp_dir, "model.onnx")
+
+        torch.onnx.export(
+            wrapped_model,
+            dummy_input,
+            temp_onnx,
+            input_names=["input_image"],
+            output_names=["output_mask"],
+            opset_version=13,
+        )
+
+        # 2 Patch onnx2tf dummy test image and convert
+        mock_fn = lambda: np.zeros((img_size, img_size, 3), dtype=np.float32)
+        otf.download_test_image_data = mock_fn
+        cf.download_test_image_data = mock_fn
+
+        onnx2tf_out = os.path.join(temp_dir, "onnx2tf_out")
+        onnx2tf.convert(
+            input_onnx_file_path=temp_onnx,
+            output_folder_path=onnx2tf_out,
+            keep_shape_absolutely_input_names=["input_image"],
+            non_verbose=True,
+        )
+
+        # 3 Locate converted float32 tflite file and copy to target
+        tflite_candidates = glob.glob(os.path.join(onnx2tf_out, "*_float32.tflite"))
+        if not tflite_candidates:
+            tflite_candidates = glob.glob(os.path.join(onnx2tf_out, "*.tflite"))
+
+        assert tflite_candidates, f"No .tflite files found in {onnx2tf_out}"
+        generated_tflite = tflite_candidates[0]
+
+        os.makedirs(os.path.dirname(os.path.abspath(filepath)), exist_ok=True)
+        shutil.copyfile(generated_tflite, filepath)
+
+        # Cleanup temporary conversion artifacts
+        if os.path.exists(temp_dir):
+            shutil.rmtree(temp_dir)
+
+        self.logger.info(f"TFLite model successfully exported and saved: {filepath}")
 
     def generate_validation_image(
         self,
