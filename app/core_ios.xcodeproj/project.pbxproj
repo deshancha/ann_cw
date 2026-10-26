@@ -289,7 +289,7 @@
 		2130751B2509378700A49CD5 /* core_ios */ = {
 			isa = PBXGroup;
 			children = (
-				706320E127B10CFA0058FC51 /* TF */,
+				706320E127B10CFA0058FC51 /* Model */,
 				2130751C2509378700A49CD5 /* AppDelegate.h */,
 				2130751D2509378700A49CD5 /* AppDelegate.m */,
 				21027935251860C000FC834D /* VC */,
@@ -425,14 +425,14 @@
 			path = AppSinkData;
 			sourceTree = "<group>";
 		};
-		706320E127B10CFA0058FC51 /* TF */ = {
+		706320E127B10CFA0058FC51 /* Model */ = {
 			isa = PBXGroup;
 			children = (
 				E227F330308E3000004FBAC5 /* UNetMobileNetV1Full.mlpackage */,
 				706320E827B10CFA0058FC51 /* AppLog.cpp */,
 				706320E527B10CFA0058FC51 /* AppLog.h */,
 			);
-			path = TF;
+			path = Model;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
