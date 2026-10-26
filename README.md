@@ -11,7 +11,7 @@ caffeinate -i python model_creation/main.py --task train_full --dataset matting_
 Train model -> matix create at matrics dir
 
 ```bash`
-dvc add checkpoints
+dvc add model_creation/output/checkpoints
 dvc push
 
 # add to git
@@ -21,8 +21,9 @@ git push origin developer --tags
 ```
 
 From ios app side 
-```
-sh ./config/dvc_get.sh v1.1
+```bash
+cd '/Users/chamikadeshan/Documents/Projects/Avatarin/avatarin_ios_app'
+sh ./config/dvc_get.sh v1.2
 ```
 
 ```

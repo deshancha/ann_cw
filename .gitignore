@@ -219,7 +219,7 @@ __marimo__/
 # Streamlit
 .streamlit/secrets.toml
 /data
-checkpoints
-outputs
+/model_creation/output/checkpoints
+/model_creation/output/gen_images
 Local
 .DS_Store

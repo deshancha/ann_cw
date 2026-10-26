@@ -1,2 +1,2 @@
 metrics:
-  - metrics/metrics.json
+  - model_creation/output/metrics/metrics.json

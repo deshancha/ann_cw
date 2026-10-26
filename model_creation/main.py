@@ -60,13 +60,16 @@ def main():
             os.path.join(CURRENT_DIR, "..", os.getenv("MATTING_DATA_DIR", "data/matting_human"))
         ),
         "checkpoints_dir": os.path.abspath(
-            os.path.join(CURRENT_DIR, "..", os.getenv("CHECKPOINTS_DIR", "checkpoints"))
+            os.path.join(CURRENT_DIR, "..", os.getenv("CHECKPOINTS_DIR", "model_creation/output/checkpoints"))
         ),
         "output_dir": os.path.abspath(
-            os.path.join(CURRENT_DIR, "..", os.getenv("OUTPUT_DIR", "outputs"))
+            os.path.join(CURRENT_DIR, "..", os.getenv("OUTPUT_DIR", "model_creation/output/gen_images"))
         ),
         "metrics_dir": os.path.abspath(
-            os.path.join(CURRENT_DIR, "..", os.getenv("METRICS_DIR", "metrics"))
+            os.path.join(CURRENT_DIR, "..", os.getenv("METRICS_DIR", "model_creation/output/metrics"))
+        ),
+        "experiments_dir": os.path.abspath(
+            os.path.join(CURRENT_DIR, "..", os.getenv("EXPERIMENTS_DIR", "model_creation/output/experiments"))
         ),
     }
 
