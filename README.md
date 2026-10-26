@@ -20,29 +20,35 @@ python model_creation/main.py --env .env.quick --task export_tflite
 python model_creation/main.py --env .env.quick --task pipeline
 ```
 
-# Train model -> matix create at matrics dir
+# Publish Model to Hugging Face
+
+## .env.secret
 
 ```
-source .venv/bin/activate
-dvc add model_creation/output/checkpoints
-dvc push
+HF_TOKEN=HUGGING_FACE_WRITABLE_ACCESS_TOKEN_HERE
+```
 
-# add to git
-git commit -m "Model v1.1: xxx"
-git tag -a v1.1 -m "v1.1 weights"
+```bash
+# Upload to Hugging Face
+sh ./app/config/hf_push.sh v1.4
+
+# Can use HF CLI directly
+hf upload deshanc/unet-mobilenet-portrait-segmentation ./model_creation/output/checkpoints/ v1.4
+
+# Add to git for reproducability purposes
+git commit -m "Model v1.4: xxx"
+git tag -a v1.4 -m "v1.4 release"
 git push origin developer --tags
 ```
 
 # Fetch Model via Hugging Face Hub
 
-Models are hosted on [Hugging Face: deshanc/unet-mobilenet-portrait-segmentation](https://huggingface.co/deshanc/unet-mobilenet-portrait-segmentation).
-
-Download and prepare the CoreML model for the iOS app without needing DVC or credentials:
+Hosted on [Hugging Face](https://huggingface.co/deshanc/unet-mobilenet-portrait-segmentation).
 
 ```bash
-# Fetch latest/v1.3 (default):
+# Fetch v1.2 (default)`
 sh ./app/config/hf_get.sh
 
-# Or fetch a specific version (v1.0, v1.1, v1.2, v1.3):
+# Fetch a version (v1.0, v1.1, v1.2, v1.3)
 sh ./app/config/hf_get.sh v1.2    #app/core_ios/Model/UNetMobileNetFull.mlpackage
 ```
