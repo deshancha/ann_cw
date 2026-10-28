@@ -151,3 +151,44 @@ class MattingHumanLoaderImp(ISegmentationLoader):
         val_loader = DataLoader(val_ds, batch_size=batch_size, shuffle=False, num_workers=0)
 
         return train_loader, val_loader
+
+    def get_test_loader(
+        self,
+        img_size: int,
+        batch_size: int = 1,
+        max_test_samples: int = 0,
+    ) -> DataLoader:
+        self.logger.info(
+            f"Matting Human Test Loader init (img_size={img_size}, batch_size={batch_size}, "
+            f"max_test={max_test_samples})"
+        )
+
+        norm = transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
+
+        test_img_dir = os.path.join(self.data_dir, "test", "original")
+        test_mask_dir = os.path.join(self.data_dir, "test", "matting")
+
+        assert os.path.exists(test_img_dir) and os.path.exists(test_mask_dir), (
+            f"Test dir not found : {self.data_dir}/test"
+        )
+
+        test_imgs = sorted(glob.glob(os.path.join(test_img_dir, "*.*")))
+        test_masks = sorted(glob.glob(os.path.join(test_mask_dir, "*.*")))
+
+        assert len(test_imgs) == len(test_masks) and len(test_imgs) > 0, "No test imgs foun"
+
+        if max_test_samples and max_test_samples > 0:
+            test_imgs = test_imgs[:max_test_samples]
+            test_masks = test_masks[:max_test_samples]
+
+        test_ds = MattingHumanDataset(
+            image_paths=test_imgs,
+            mask_paths=test_masks,
+            img_size=img_size,
+            is_train=False,
+            norm=norm,
+        )
+
+        self.logger.info(f"Loaded held-out test dataset: {len(test_ds)} samples (leakage-free)")
+
+        return DataLoader(test_ds, batch_size=batch_size, shuffle=False, num_workers=0)

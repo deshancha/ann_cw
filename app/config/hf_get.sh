@@ -5,7 +5,7 @@ VERSION="${1:-v1.3}"
 case "$VERSION" in
     v1.0|v1.1) PKG="UNetMobileNetV1Full" ;;
     v1.2)      PKG="UNet_mobilenetv3" ;;
-    *)         VERSION="v1.2"; PKG="UNet_mobilenetv1" ;;
+    v1.3|*)    PKG="UNet_mobilenetv1" ;;
 esac
 
 TARGET="$(cd "$(dirname "$0")/../.." && pwd)/app/core_ios/Model/UNetMobileNetFull.mlpackage"

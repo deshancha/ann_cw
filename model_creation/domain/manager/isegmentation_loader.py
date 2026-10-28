@@ -17,3 +17,13 @@ class ISegmentationLoader(ABC):
         # return -> train and validation loaders
         pass
 
+    @abstractmethod
+    def get_test_loader(
+        self,
+        img_size: int,
+        batch_size: int = 1,
+        max_test_samples: int = 0,
+    ) -> Any:
+        # return -> test loader
+        pass
+

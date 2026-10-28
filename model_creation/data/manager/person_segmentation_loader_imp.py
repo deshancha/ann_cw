@@ -168,3 +168,36 @@ class PersonSegmentationLoaderImp(ISegmentationLoader):
         val_loader = DataLoader(val_ds, batch_size=batch_size, shuffle=False, num_workers=0)
 
         return train_loader, val_loader
+
+    def get_test_loader(
+        self,
+        img_size: int,
+        batch_size: int = 1,
+        max_test_samples: int = 0,
+    ) -> DataLoader:
+        self.logger.info(
+            f"Person Segmentation Test Loader init (img_size={img_size}, batch_size={batch_size}, "
+            f"max_test={max_test_samples})"
+        )
+        norm = transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
+        test_img_dir = os.path.join(self.data_dir, "test", "images")
+        test_mask_dir = os.path.join(self.data_dir, "test", "masks")
+        if not os.path.exists(test_img_dir):
+            test_img_dir = os.path.join(self.data_dir, "val", "images")
+            test_mask_dir = os.path.join(self.data_dir, "val", "masks")
+
+        img_files = sorted([os.path.join(test_img_dir, f) for f in os.listdir(test_img_dir) if not f.startswith(".")])
+        mask_files = sorted([os.path.join(test_mask_dir, f) for f in os.listdir(test_mask_dir) if not f.startswith(".")])
+
+        if max_test_samples and max_test_samples > 0:
+            img_files = img_files[:max_test_samples]
+            mask_files = mask_files[:max_test_samples]
+
+        test_ds = PersonSegmentationDataset(
+            image_paths=img_files,
+            mask_paths=mask_files,
+            img_size=img_size,
+            is_train=False,
+            norm=norm,
+        )
+        return DataLoader(test_ds, batch_size=batch_size, shuffle=False, num_workers=0)
