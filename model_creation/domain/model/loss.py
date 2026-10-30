@@ -65,7 +65,6 @@ def calculate_iou_and_dice(
 def calculate_binary_mask_iou_and_dice(
     pred_mask: np.ndarray, gt_mask: np.ndarray, threshold: float = 0.5
 ) -> tuple[float, float]:
-    """Calculates IoU and Dice between numpy binary/probabilistic masks."""
     pred_bin = (pred_mask > threshold).astype(np.float32)
     gt_bin = (gt_mask > threshold).astype(np.float32)
 

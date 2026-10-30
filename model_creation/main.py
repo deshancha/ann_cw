@@ -34,6 +34,7 @@ def main():
             "export_tflite",
             "pipeline",
             "check_timm",
+            "benchmark",
         ],
         help="Task (default: train)",
     )
@@ -46,6 +47,7 @@ def main():
         os.path.join(root_dir, args.env),
         os.path.join(root_dir, "config", "train", args.env),
         os.path.join(root_dir, "config", "test", args.env),
+        os.path.join(root_dir, "config", "benchmark", args.env),
         os.path.join(CURRENT_DIR, args.env),
     ]
     env_file = next((os.path.abspath(p) for p in candidate_paths if os.path.isfile(p)), None)
@@ -253,6 +255,19 @@ def main():
     elif args.task == "check_timm":
         usecase = container.check_timm_usecase()
         usecase.execute()
+
+    elif args.task == "benchmark":
+        usecase = container.eval_grabcut_benchmark_usecase()
+        samples = int(os.getenv("MAX_BENCHMARK_SAMPLES"))
+        usecase.execute(
+            checkpoint_path=target_pt_path,
+            model_type=model_type,
+            width=cfg["width"],
+            img_size=cfg["img_size"],
+            device=cfg["device"],
+            num_samples=samples,
+            output_dir=cfg["output_dir"],
+        )
 
 
 if __name__ == "__main__":
