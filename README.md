@@ -13,11 +13,13 @@ python model_creation/main.py --env config/train/.env.quick --task export_coreml
 python model_creation/main.py --env config/train/.env.quick --task export_tflite
 python model_creation/main.py --env config/train/.env.quick --task pipeline
 
+sh ./config/hf_get_all.sh
 python model_creation/main.py --env config/test/.env.v1.0 --task test
 python model_creation/main.py --env config/test/.env.v1.1 --task test
 python model_creation/main.py --env config/test/.env.v1.2 --task test
 python model_creation/main.py --env config/test/.env.v1.3 --task test
 
+sh ./config/hf_get_all.sh
 python model_creation/main.py --env config/benchmark/.env.v1.0 --task benchmark
 python model_creation/main.py --env config/benchmark/.env.v1.1 --task benchmark
 python model_creation/main.py --env config/benchmark/.env.v1.2 --task benchmark
