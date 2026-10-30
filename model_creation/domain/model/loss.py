@@ -1,6 +1,7 @@
 # Author: Chamika Deshan
 # Segmentation losses and eval matrixes (Dice Loss & iou)
 
+import numpy as np
 import torch
 import torch.nn as nn
 
@@ -58,3 +59,20 @@ def calculate_iou_and_dice(
         dice = (2.0 * intersection + 1e-6) / (pred_binary_masks_flat.sum().item() + targets_flat.sum().item() + 1e-6)
 
         return iou, dice
+
+
+# same as above, but it taked binary pred_mask and numpy array, for grab cut need this``
+def calculate_binary_mask_iou_and_dice(
+    pred_mask: np.ndarray, gt_mask: np.ndarray, threshold: float = 0.5
+) -> tuple[float, float]:
+    """Calculates IoU and Dice between numpy binary/probabilistic masks."""
+    pred_bin = (pred_mask > threshold).astype(np.float32)
+    gt_bin = (gt_mask > threshold).astype(np.float32)
+
+    intersection = np.sum(pred_bin * gt_bin)
+    union = np.sum(pred_bin) + np.sum(gt_bin) - intersection
+    total_area = np.sum(pred_bin) + np.sum(gt_bin)
+
+    iou = (intersection + 1e-6) / (union + 1e-6)
+    dice = (2.0 * intersection + 1e-6) / (total_area + 1e-6)
+    return float(iou), float(dice)
