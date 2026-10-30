@@ -4,25 +4,29 @@
 import torch
 import torch.nn as nn
 
+# we use Dice loss for binary segmentation - it can tell how well shares are overlap, refer my notes
 class DiceLoss(nn.Module):
-    """Dice Loss for binary segmentation."""
 
     def __init__(self, smooth: float = 1e-6):
         super().__init__()
         self.smooth = smooth
 
-    def forward(self, logits: torch.Tensor, targets: torch.Tensor) -> torch.Tensor:
-        probs = torch.sigmoid(logits)
+    def forward(self, raw_mask_scores: torch.Tensor, targets: torch.Tensor) -> torch.Tensor:
+        # Note - dice calc here same as whats in calculate_iou_and_dice, but purpose is for training the model
+        probs = torch.sigmoid(raw_mask_scores)
         probs_flat = probs.view(-1)
         targets_flat = targets.view(-1)
 
         intersection = (probs_flat * targets_flat).sum()
+
+        # dice calc - tell how well 2 shapes overlap, accuracy is not good to use here, refer dice notes
         dice = (2.0 * intersection + self.smooth) / (probs_flat.sum() + targets_flat.sum() + self.smooth)
         return 1.0 - dice
 
 
+# This is a hybrid Binary Cross Entropy + Dice Loss"
+# Note - 2 classes so we can pick BCE
 class BCEDiceLoss(nn.Module):
-    """Binary Cross Entropy + Logits and Dice Loss"""
 
     def __init__(self, bce_weight: float = 0.5, dice_weight: float = 0.5):
         super().__init__()
@@ -31,26 +35,26 @@ class BCEDiceLoss(nn.Module):
         self.bce_weight = bce_weight
         self.dice_weight = dice_weight
 
-    def forward(self, logits: torch.Tensor, targets: torch.Tensor) -> torch.Tensor:
-        bce_loss = self.bce(logits, targets)
-        dice_loss = self.dice(logits, targets)
+    def forward(self, raw_mask_scores: torch.Tensor, targets: torch.Tensor) -> torch.Tensor:
+        bce_loss = self.bce(raw_mask_scores, targets)
+        dice_loss = self.dice(raw_mask_scores, targets)
         return self.bce_weight * bce_loss + self.dice_weight * dice_loss
 
 
-# Intersection over union/Jaccard index part
+# Intersection over union/Jaccard index and dice for validation
 def calculate_iou_and_dice(
-    logits: torch.Tensor, targets: torch.Tensor, threshold: float = 0.5
+    raw_mask_scores: torch.Tensor, targets: torch.Tensor, threshold: float = 0.5
 ) -> tuple[float, float]:
-    """Calculates batch mean IoU and Dice score"""
     with torch.no_grad():
-        preds = (torch.sigmoid(logits) > threshold).float()
-        preds_flat = preds.view(-1)
+        
+        pred_binary_masks = (torch.sigmoid(raw_mask_scores) > threshold).float()
+        pred_binary_masks_flat = pred_binary_masks.view(-1)
         targets_flat = targets.view(-1)
 
-        intersection = (preds_flat * targets_flat).sum().item()
-        total_union = (preds_flat + targets_flat).clamp(0, 1).sum().item()
+        intersection = (pred_binary_masks_flat * targets_flat).sum().item()
+        total_union = (pred_binary_masks_flat + targets_flat).clamp(0, 1).sum().item()
 
         iou = (intersection + 1e-6) / (total_union + 1e-6)
-        dice = (2.0 * intersection + 1e-6) / (preds_flat.sum().item() + targets_flat.sum().item() + 1e-6)
+        dice = (2.0 * intersection + 1e-6) / (pred_binary_masks_flat.sum().item() + targets_flat.sum().item() + 1e-6)
 
         return iou, dice
