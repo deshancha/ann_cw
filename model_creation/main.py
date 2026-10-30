@@ -28,6 +28,7 @@ def main():
         choices=[
             "train",
             "validate",
+            "test",
             "visualize",
             "export_coreml",
             "export_tflite",
@@ -53,6 +54,7 @@ def main():
         "device": os.getenv("DEVICE", "mps"),
         "max_train_samples": int(os.getenv("MAX_TRAIN_SAMPLES", "0")),
         "max_val_samples": int(os.getenv("MAX_VAL_SAMPLES", "0")),
+        "max_test_samples": int(os.getenv("MAX_TEST_SAMPLES", "0")),
         "segmentation_data_dir": os.path.abspath(
             os.path.join(CURRENT_DIR, "..", os.getenv("SEGMENTATION_DATA_DIR", "data/supervisely_person"))
         ),
@@ -109,6 +111,19 @@ def main():
             device=cfg["device"],
             metrics_dir=cfg["metrics_dir"],
             max_val_samples=cfg["max_val_samples"],
+        )
+
+    # 2b: Test
+    elif args.task == "test":
+        usecase = container.test_model_usecase(data_loader=loader)
+        usecase.execute(
+            checkpoint_path=best_pt_path,
+            model_type=model_type,
+            img_size=cfg["img_size"],
+            width=cfg["width"],
+            device=cfg["device"],
+            output_dir=cfg["metrics_dir"],
+            max_test_samples=cfg["max_test_samples"],
         )
 
     # 3: Visualize Result

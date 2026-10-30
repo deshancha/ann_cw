@@ -265,3 +265,4 @@ fastlane/screenshots
 fastlane/test_output
 
 app/core_ios.xcodeproj/project.xcworkspace/xcuserdata
+model_creation/output
