@@ -6,13 +6,13 @@
 
 ```
 source .venv/bin/activate
-python model_creation/main.py --env .env.quick --task train
-python model_creation/main.py --env .env.quick --task validate
-python model_creation/main.py --env .env.test --task test
-python model_creation/main.py --env .env.quick --task visualize
-python model_creation/main.py --env .env.quick --task export_coreml
-python model_creation/main.py --env .env.quick --task export_tflite
-python model_creation/main.py --env .env.quick --task pipeline
+python model_creation/main.py --env config/train/.env.quick --task train
+python model_creation/main.py --env config/train/.env.quick --task validate
+python model_creation/main.py --env config/test/.env.v1.3 --task test
+python model_creation/main.py --env config/train/.env.quick --task visualize
+python model_creation/main.py --env config/train/.env.quick --task export_coreml
+python model_creation/main.py --env config/train/.env.quick --task export_tflite
+python model_creation/main.py --env config/train/.env.quick --task pipeline
 ```
 
 # Fetch all models
@@ -21,7 +21,7 @@ From [Hugging Face](https://huggingface.co/deshanc/unet-mobilenet-portrait-segme
 
 ```bash
 # 1. Fetch ALL 4 trained checkpoints into model_creation/output/all_trained/
-sh ./model_creation/config/hf_get_all.sh
+sh ./config/hf_get_all.sh
 
 # 2. Fetch specific version into iOS app (v1.0, v1.1, v1.2, v1.3)
 sh ./app/config/hf_get.sh v1.2    # app/core_ios/Model/UNetMobileNetFull.mlpackage

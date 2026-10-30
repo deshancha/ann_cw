@@ -18,8 +18,8 @@ def main():
     parser.add_argument(
         "--env",
         type=str,
-        default=".env",
-        help="Config (default: .env, or .env.quick)",
+        default="config/train/.env.quick",
+        help="config/train/.env.quick or config/test/.env.v1.3",
     )
     parser.add_argument(
         "--task",
@@ -39,9 +39,25 @@ def main():
     )
     args = parser.parse_args()
 
-    # Load .env file
-    env_file = os.path.join(CURRENT_DIR, os.path.basename(args.env))
+    # Resolve and load .env file
+    root_dir = os.path.abspath(os.path.join(CURRENT_DIR, ".."))
+    candidate_paths = [
+        args.env,
+        os.path.join(root_dir, args.env),
+        os.path.join(root_dir, "config", "train", args.env),
+        os.path.join(root_dir, "config", "test", args.env),
+        os.path.join(CURRENT_DIR, args.env),
+    ]
+    env_file = next((os.path.abspath(p) for p in candidate_paths if os.path.isfile(p)), None)
+
+    if not env_file:
+        raise FileNotFoundError(
+            f"Config file not found for '{args.env}'. "
+            f"Please specify a valid file in config/train/ or config/test/ (e.g. --env config/train/.env.quick or --env .env.quick)"
+        )
+
     load_dotenv(dotenv_path=env_file, override=True)
+    print(f"Loaded config: {env_file}")
 
     cfg = {
         "model_type": os.getenv("MODEL_TYPE", "mobilenetv3"),
@@ -73,6 +89,7 @@ def main():
         "experiments_dir": os.path.abspath(
             os.path.join(CURRENT_DIR, "..", os.getenv("EXPERIMENTS_DIR", "model_creation/output/experiments"))
         ),
+        "checkpoint_path": os.getenv("CHECKPOINT_PATH", ""),
     }
 
     container = AppContainer()
@@ -81,6 +98,11 @@ def main():
     loader = container.matting_human_loader()
     model_type = cfg["model_type"]
     best_pt_path = os.path.join(cfg["checkpoints_dir"], f"unet_{model_type}_best.pt")
+    target_pt_path = (
+        os.path.abspath(os.path.join(CURRENT_DIR, "..", cfg["checkpoint_path"]))
+        if cfg["checkpoint_path"]
+        else best_pt_path
+    )
 
     # 1: Train
     if args.task == "train":
@@ -117,7 +139,7 @@ def main():
     elif args.task == "test":
         usecase = container.test_model_usecase(data_loader=loader)
         usecase.execute(
-            checkpoint_path=best_pt_path,
+            checkpoint_path=target_pt_path,
             model_type=model_type,
             img_size=cfg["img_size"],
             width=cfg["width"],
