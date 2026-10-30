@@ -6,13 +6,16 @@ from dependency_injector import containers, providers
 from core.util.logger import LoggerFactory, ILogger
 from domain.manager.isegmentation_loader import ISegmentationLoader
 from domain.manager.imodel_creation import IModelCreation
+from domain.manager.imodel_test import IModelTest
 from data.manager.person_segmentation_loader_imp import PersonSegmentationLoaderImp
 from data.manager.matting_human_loader_imp import MattingHumanLoaderImp
 from data.manager.model_creation_imp import ModelCreationImp
+from data.manager.model_test_imp import ModelTestImp
 
 from domain.usecases.check_timm_usecase import CheckTimmUseCase
 from domain.usecases.train_model_usecase import TrainModelUseCase
 from domain.usecases.validate_model_usecase import ValidateModelUseCase
+from domain.usecases.test_model_usecase import TestModelUseCase
 from domain.usecases.visualize_validation_result_usecase import VisualizeValidationResultUseCase
 from domain.usecases.export_coreml_usecase import ExportCoreMLUseCase
 from domain.usecases.export_tflite_usecase import ExportTFLiteUseCase
@@ -47,6 +50,11 @@ class AppContainer(containers.DeclarativeContainer):
         logger=logger,
     )
 
+    model_test: providers.Provider[IModelTest] = providers.Singleton(
+        ModelTestImp,
+        logger=logger,
+    )
+
     check_timm_usecase = providers.Factory(
         CheckTimmUseCase,
         logger=logger,
@@ -65,6 +73,14 @@ class AppContainer(containers.DeclarativeContainer):
         ValidateModelUseCase,
         data_loader=matting_human_loader,
         model_creation=model_creation,
+        logger=logger,
+    )
+
+    # Step 2b: Test model on held-out test dataset
+    test_model_usecase = providers.Factory(
+        TestModelUseCase,
+        data_loader=matting_human_loader,
+        model_test=model_test,
         logger=logger,
     )
 

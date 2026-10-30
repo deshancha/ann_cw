@@ -73,5 +73,5 @@ class UNetDecoder(nn.Module):
         x = self.up3(x, f1)   # stride 4
         x = self.up4(x, f0)   # stride 2
         x = self.final_upsample(x)  # stride 1 (original size)
-        logits = self.final_conv(x)
-        return logits
+        raw_mask_scores = self.final_conv(x)
+        return raw_mask_scores

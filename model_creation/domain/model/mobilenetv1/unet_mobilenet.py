@@ -24,5 +24,5 @@ class UNetMobileNetV1(nn.Module):
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         features = self.encoder(x)
-        logits = self.decoder(features)
-        return logits
+        raw_mask_scores = self.decoder(features)
+        return raw_mask_scores

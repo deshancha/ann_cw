@@ -39,8 +39,8 @@ class ModelCreationImp(IModelCreation):
         for images, masks in train_loader:
             images, masks = images.to(device), masks.to(device)
             optimizer.zero_grad()
-            logits = model(images)
-            loss = loss_fn(logits, masks)
+            raw_mask_scores = model(images)
+            loss = loss_fn(raw_mask_scores, masks)
             loss.backward()
             optimizer.step()
 
@@ -65,11 +65,11 @@ class ModelCreationImp(IModelCreation):
         with torch.no_grad():
             for images, masks in val_loader:
                 images, masks = images.to(device), masks.to(device)
-                logits = model(images)
-                loss = loss_fn(logits, masks)
+                raw_mask_scores = model(images)
+                loss = loss_fn(raw_mask_scores, masks)
                 total_loss += loss.item()
 
-                iou, dice = calculate_iou_and_dice(logits, masks)
+                iou, dice = calculate_iou_and_dice(raw_mask_scores, masks)
                 total_iou += iou
                 total_dice += dice
                 batches += 1
@@ -92,8 +92,8 @@ class ModelCreationImp(IModelCreation):
                 self.unet = unet
 
             def forward(self, x: torch.Tensor) -> torch.Tensor:
-                logits = self.unet(x)
-                return torch.clamp(torch.sigmoid(logits) * 255.0, 0.0, 255.0)
+                raw_mask_scores = self.unet(x)
+                return torch.clamp(torch.sigmoid(raw_mask_scores) * 255.0, 0.0, 255.0)
 
         wrapped_model = CoreMLWrapper(model).eval().cpu()
         example_input = torch.rand(1, 3, img_size, img_size)
@@ -142,8 +142,8 @@ class ModelCreationImp(IModelCreation):
                 # C++ ISegmentProcessTFL  NHWC [1, H, W, 3] in [0.0, 1.0]
                 x = x.permute(0, 3, 1, 2)  # NHWC -> NCHW
                 x = x * 2.0 - 1.0  # [0, 1] -> [-1, 1] MobileNet normalization
-                logits = self.unet(x)
-                probs = torch.sigmoid(logits)
+                raw_mask_scores = self.unet(x)
+                probs = torch.sigmoid(raw_mask_scores)
                 probs = probs.permute(0, 2, 3, 1)  # NCHW -> NHWC [1, H, W, 1]
                 return probs
 
@@ -205,8 +205,8 @@ class ModelCreationImp(IModelCreation):
         with torch.no_grad():
             images, masks = next(iter(val_loader))
             images, masks = images.to(device), masks.to(device)
-            logits = model(images)
-            pred_probs = torch.sigmoid(logits)
+            raw_mask_scores = model(images)
+            pred_probs = torch.sigmoid(raw_mask_scores)
 
             img_tensor = images[0].cpu().numpy().transpose(1, 2, 0)
             gt_mask_tensor = masks[0, 0].cpu().numpy()

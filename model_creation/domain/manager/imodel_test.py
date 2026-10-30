@@ -14,6 +14,7 @@ class IModelTest(ABC):
         model: torch.nn.Module,
         test_loader: DataLoader,
         device: str,
-    ) -> Tuple[float, float]:
-        # Ret : test_iou, test_dice
+        output_dir: str = "",
+    ) -> Tuple[float, float, Dict[str, Any]]:
+        # Ret : test_iou, test_dice, extremes_dict (best & worst iou + image path)
         pass

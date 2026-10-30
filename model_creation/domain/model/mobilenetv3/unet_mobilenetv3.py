@@ -69,5 +69,5 @@ class UNetMobileNetV3(nn.Module):
         x = self.up3(x, f1)         # Stride 4
         x = self.up4(x, f0)         # Stride 2
         x = self.final_upsample(x)  # Stride 1
-        logits = self.head(x)
-        return logits
+        raw_mask_scores = self.head(x)
+        return raw_mask_scores
