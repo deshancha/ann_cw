@@ -1,6 +1,7 @@
 #!/bin/bash
 set -e
 
+# This would download all trained models to respective directories from HuggingFace
 REPO="https://huggingface.co/deshanc/unet-mobilenet-portrait-segmentation/resolve/main"
 TARGET="$(cd "$(dirname "$0")/.." && pwd)/model_creation/output/all_trained"
 mkdir -p "$TARGET"
