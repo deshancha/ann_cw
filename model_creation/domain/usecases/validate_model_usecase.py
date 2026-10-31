@@ -36,8 +36,6 @@ class ValidateModelUseCase:
         metrics_dir: str = "metrics",
         max_val_samples: int = 0,
     ) -> Dict[str, Any]:
-        os.makedirs(metrics_dir, exist_ok=True)
-
         # 1 Load validation Data
         self.logger.info(f"Loading validation set (img_size={img_size}, max_val_samples={max_val_samples})...")
         _, val_loader = self.data_loader.get_dataloaders(

@@ -35,8 +35,6 @@ class TestModelUseCase:
         output_dir: str = "output/metrics",
         max_test_samples: int = 0,
     ) -> Dict[str, Any]:
-        os.makedirs(output_dir, exist_ok=True)
-
         # load data
         test_loader = self.data_loader.get_test_loader(
             img_size=img_size,

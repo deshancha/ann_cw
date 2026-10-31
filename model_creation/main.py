@@ -61,6 +61,15 @@ def main():
     load_dotenv(dotenv_path=env_file, override=True)
     print(f"Loaded config: {env_file}")
 
+    # Load global config (.env.global)
+    global_candidates = [
+        os.path.join(root_dir, "config", ".env.global")
+    ]
+    global_env_file = next((p for p in global_candidates if os.path.isfile(p)), None)
+    if global_env_file:
+        load_dotenv(dotenv_path=global_env_file, override=False)
+        print(f"Loaded global config: {global_env_file}")
+
     cfg = {
         "model_type": os.getenv("MODEL_TYPE", "mobilenetv3"),
         "epochs": int(os.getenv("EPOCHS", "3")),
@@ -258,7 +267,7 @@ def main():
 
     elif args.task == "benchmark":
         usecase = container.eval_grabcut_benchmark_usecase()
-        samples = int(os.getenv("MAX_BENCHMARK_SAMPLES"))
+        samples = int(os.getenv("MAX_BENCHMARK_SAMPLES", "50"))
         usecase.execute(
             checkpoint_path=target_pt_path,
             model_type=model_type,

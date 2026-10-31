@@ -81,7 +81,6 @@ class ModelCreationImp(IModelCreation):
         )
 
     def save_checkpoint(self, model: torch.nn.Module, filepath: str) -> None:
-        os.makedirs(os.path.dirname(os.path.abspath(filepath)), exist_ok=True)
         torch.save(model.state_dict(), filepath)
         self.logger.info(f"Model checkpoint saved: {filepath}")
 
@@ -122,7 +121,6 @@ class ModelCreationImp(IModelCreation):
             minimum_deployment_target=ct.target.iOS16,
         )
 
-        os.makedirs(os.path.dirname(os.path.abspath(filepath)), exist_ok=True)
         mlmodel.save(filepath)
         self.logger.info(f"Apple CoreML model saved: {filepath}")
 
@@ -185,7 +183,6 @@ class ModelCreationImp(IModelCreation):
         assert tflite_candidates, f"No .tflite files found in {onnx2tf_out}"
         generated_tflite = tflite_candidates[0]
 
-        os.makedirs(os.path.dirname(os.path.abspath(filepath)), exist_ok=True)
         shutil.copyfile(generated_tflite, filepath)
 
         # Cleanup temporary conversion artifacts
@@ -231,7 +228,6 @@ class ModelCreationImp(IModelCreation):
         pred_3ch = np.stack([pred_uint8] * 3, axis=-1)
         comparison = np.hstack([orig_uint8, gt_3ch, pred_3ch, composite])
 
-        os.makedirs(output_dir, exist_ok=True)
         out_path = os.path.join(output_dir, "full_training_validation_result.png")
         Image.fromarray(comparison).save(out_path)
         return out_path

@@ -151,6 +151,7 @@ activemq-data/
 
 # Environments
 .env*
+!config/.env*
 !config/test/.env*
 !config/train/.env*
 !config/benchmark/.env*

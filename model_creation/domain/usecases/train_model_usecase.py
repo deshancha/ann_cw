@@ -39,7 +39,6 @@ class TrainModelUseCase:
         max_val_samples: int = 0,
     ) -> Dict[str, Any]:
         torch.manual_seed(seed)
-        os.makedirs(checkpoints_dir, exist_ok=True)
 
         # 1 Load
         self.logger.info(

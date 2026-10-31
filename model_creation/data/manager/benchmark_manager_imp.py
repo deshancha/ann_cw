@@ -1,7 +1,6 @@
 # Author: Chamika Deshan
 # Benchmark Manager Implementation (OpenCV vs UNet)
 
-import os
 from typing import List, Dict, Any, Tuple, Optional
 import numpy as np
 import cv2
@@ -108,8 +107,6 @@ class BenchmarkManagerImp(IBenchmarkManager):
         samples: List[Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, float, float]],
         output_path: str,
     ) -> None:
-        
-        os.makedirs(os.path.dirname(output_path), exist_ok=True)
         row_imgs = []
 
         for img_np, gt, gc, un, gc_i, un_i in samples:

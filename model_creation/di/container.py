@@ -1,6 +1,8 @@
 # Author: Chamika Deshan
 # Dependency Injection Container
 
+import os
+from dotenv import load_dotenv
 from dependency_injector import containers, providers
 
 from core.util.logger import LoggerFactory, ILogger
@@ -22,9 +24,43 @@ from domain.usecases.visualize_validation_result_usecase import VisualizeValidat
 from domain.usecases.export_coreml_usecase import ExportCoreMLUseCase
 from domain.usecases.export_tflite_usecase import ExportTFLiteUseCase
 from domain.usecases.eval_grabcut_benchmark_usecase import EvalGrabcutBenchmarkUseCase
+from domain.usecases.xai_gradcam_usecase import XAIGradCamUseCase
 
 
-class AppContainer(containers.DeclarativeContainer):
+def init_output_directories():
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    root_dir = os.path.abspath(os.path.join(current_dir, "..", ".."))
+    
+    global_candidates = [
+        os.path.join(root_dir, "config", ".env.global")
+    ]
+    global_env_file = next((p for p in global_candidates if os.path.isfile(p)), None)
+
+    if global_env_file:
+        load_dotenv(dotenv_path=global_env_file, override=False)
+
+    output_dirs = [
+        os.getenv("CHECKPOINTS_DIR", "model_creation/output/checkpoints"),
+        os.getenv("EXPERIMENTS_DIR", "model_creation/output/experiments"),
+        os.getenv("OUTPUT_DIR", "model_creation/output/gen_images"),
+        os.getenv("METRICS_DIR", "model_creation/output/metrics"),
+        os.getenv("XAI_DIR", "model_creation/output/xai"),
+    ]
+
+    for d in output_dirs:
+        abs_dir = d if os.path.isabs(d) else os.path.abspath(os.path.join(root_dir, d))
+        os.makedirs(abs_dir, exist_ok=True)
+
+
+class AppContainerMeta(type(containers.DeclarativeContainer)):
+    
+    def __call__(cls, *args, **kwargs):
+        instance = super().__call__(*args, **kwargs)
+        init_output_directories()
+        return instance
+
+
+class AppContainer(containers.DeclarativeContainer, metaclass=AppContainerMeta):
     """DI Container"""
 
     config = providers.Configuration()

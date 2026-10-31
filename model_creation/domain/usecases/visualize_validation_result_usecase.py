@@ -32,8 +32,6 @@ class VisualizeValidationResultUseCase:
         device: str = "mps",
         output_dir: str = "outputs",
     ) -> str:
-        os.makedirs(output_dir, exist_ok=True)
-
         _, val_loader = self.data_loader.get_dataloaders(
             img_size=img_size,
             batch_size=16,

@@ -94,8 +94,6 @@ class ModelTestImp(IModelTest):
 
         # save best and worst (original + predicted mask)
         if output_dir and best_sample is not None and worst_sample is not None:
-            os.makedirs(output_dir, exist_ok=True)
-
             best_orig, best_pred = best_sample
             best_orig_path = os.path.join(output_dir, f"test_best_orig_{best_idx}.png")
             best_pred_path = os.path.join(output_dir, f"test_best_pred_{best_idx}.png")
