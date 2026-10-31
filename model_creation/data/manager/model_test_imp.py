@@ -105,9 +105,9 @@ class ModelTestImp(IModelTest):
         # save best and worst (original + predicted mask + ground truth)
         if output_dir and best_sample is not None and worst_sample is not None:
             best_orig, best_pred, best_gt = best_sample
-            best_orig_path = os.path.join(output_dir, f"test_best_orig_{best_idx}.png")
-            best_pred_path = os.path.join(output_dir, f"test_best_pred_{best_idx}.png")
-            best_gt_path = os.path.join(output_dir, f"test_best_gt_{best_idx}.png")
+            best_orig_path = os.path.join(output_dir, "test_best_orig.png")
+            best_pred_path = os.path.join(output_dir, "test_best_pred.png")
+            best_gt_path = os.path.join(output_dir, "test_best_gt.png")
             Image.fromarray(best_orig).save(best_orig_path)
             Image.fromarray(best_pred).save(best_pred_path)
             Image.fromarray(best_gt).save(best_gt_path)
@@ -116,9 +116,9 @@ class ModelTestImp(IModelTest):
             extremes_dict["best"]["gt_path"] = best_gt_path
 
             worst_orig, worst_pred, worst_gt = worst_sample
-            worst_orig_path = os.path.join(output_dir, f"test_worst_orig_{worst_idx}.png")
-            worst_pred_path = os.path.join(output_dir, f"test_worst_pred_{worst_idx}.png")
-            worst_gt_path = os.path.join(output_dir, f"test_worst_gt_{worst_idx}.png")
+            worst_orig_path = os.path.join(output_dir, "test_worst_orig.png")
+            worst_pred_path = os.path.join(output_dir, "test_worst_pred.png")
+            worst_gt_path = os.path.join(output_dir, "test_worst_gt.png")
             Image.fromarray(worst_orig).save(worst_orig_path)
             Image.fromarray(worst_pred).save(worst_pred_path)
             Image.fromarray(worst_gt).save(worst_gt_path)

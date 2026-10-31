@@ -25,6 +25,8 @@ python model_creation/main.py --env config/benchmark/.env.v1.1 --task benchmark
 python model_creation/main.py --env config/benchmark/.env.v1.2 --task benchmark
 python model_creation/main.py --env config/benchmark/.env.v1.3 --task benchmark
 
+sh ./config/hf_get_all.sh
+python model_creation/main.py --env config/xai/.env.xai --task xai
 ```
 
 # Fetch all models

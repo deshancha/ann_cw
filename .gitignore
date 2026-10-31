@@ -224,6 +224,7 @@ __marimo__/
 # Streamlit
 .streamlit/secrets.toml
 /data
+/data_
 /model_creation/output/checkpoints
 /model_creation/output/gen_images
 app/core_ios/Model/*.mlpackage
