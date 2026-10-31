@@ -6,6 +6,7 @@ from domain.usecases.visualize_validation_result_usecase import VisualizeValidat
 from domain.usecases.export_coreml_usecase import ExportCoreMLUseCase
 from domain.usecases.export_tflite_usecase import ExportTFLiteUseCase
 from domain.usecases.eval_grabcut_benchmark_usecase import EvalGrabcutBenchmarkUseCase
+from domain.usecases.xai_gradcam_usecase import XAIGradCamUseCase
 
 __all__ = [
     "CheckTimmUseCase",
@@ -16,4 +17,5 @@ __all__ = [
     "ExportCoreMLUseCase",
     "ExportTFLiteUseCase",
     "EvalGrabcutBenchmarkUseCase",
+    "XAIGradCamUseCase",
 ]

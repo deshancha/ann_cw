@@ -37,6 +37,8 @@ class ModelTestImp(IModelTest):
         worst_idx = 0
         max_iou = -1.0
         min_iou = 2.0
+        best_dice = 0.0
+        worst_dice = 0.0
         best_sample = None
         worst_sample = None
 
@@ -53,17 +55,21 @@ class ModelTestImp(IModelTest):
                 # Track min and max IoU directly with batch index
                 if iou > max_iou:
                     max_iou = iou
+                    best_dice = dice
                     best_idx = idx
                     orig_np = ((images[0].cpu().numpy().transpose(1, 2, 0) * 0.5 + 0.5).clip(0, 1) * 255).astype(np.uint8)
                     pred_np = ((torch.sigmoid(raw_mask_scores[0, 0]) > 0.5).float().cpu().numpy() * 255).astype(np.uint8)
-                    best_sample = (orig_np, pred_np)
+                    gt_np = (masks[0, 0].cpu().numpy() * 255).astype(np.uint8)
+                    best_sample = (orig_np, pred_np, gt_np)
 
                 if iou < min_iou:
                     min_iou = iou
+                    worst_dice = dice
                     worst_idx = idx
                     orig_np = ((images[0].cpu().numpy().transpose(1, 2, 0) * 0.5 + 0.5).clip(0, 1) * 255).astype(np.uint8)
                     pred_np = ((torch.sigmoid(raw_mask_scores[0, 0]) > 0.5).float().cpu().numpy() * 255).astype(np.uint8)
-                    worst_sample = (orig_np, pred_np)
+                    gt_np = (masks[0, 0].cpu().numpy() * 255).astype(np.uint8)
+                    worst_sample = (orig_np, pred_np, gt_np)
 
                 idx += 1
 
@@ -81,33 +87,43 @@ class ModelTestImp(IModelTest):
             "best": {
                 "index": best_idx,
                 "iou": float(max_iou),
+                "dice": float(best_dice),
                 "orig_path": "",
                 "pred_path": "",
+                "gt_path": "",
             },
             "worst": {
                 "index": worst_idx,
                 "iou": float(min_iou),
+                "dice": float(worst_dice),
                 "orig_path": "",
                 "pred_path": "",
+                "gt_path": "",
             },
         }
 
-        # save best and worst (original + predicted mask)
+        # save best and worst (original + predicted mask + ground truth)
         if output_dir and best_sample is not None and worst_sample is not None:
-            best_orig, best_pred = best_sample
+            best_orig, best_pred, best_gt = best_sample
             best_orig_path = os.path.join(output_dir, f"test_best_orig_{best_idx}.png")
             best_pred_path = os.path.join(output_dir, f"test_best_pred_{best_idx}.png")
+            best_gt_path = os.path.join(output_dir, f"test_best_gt_{best_idx}.png")
             Image.fromarray(best_orig).save(best_orig_path)
             Image.fromarray(best_pred).save(best_pred_path)
+            Image.fromarray(best_gt).save(best_gt_path)
             extremes_dict["best"]["orig_path"] = best_orig_path
             extremes_dict["best"]["pred_path"] = best_pred_path
+            extremes_dict["best"]["gt_path"] = best_gt_path
 
-            worst_orig, worst_pred = worst_sample
+            worst_orig, worst_pred, worst_gt = worst_sample
             worst_orig_path = os.path.join(output_dir, f"test_worst_orig_{worst_idx}.png")
             worst_pred_path = os.path.join(output_dir, f"test_worst_pred_{worst_idx}.png")
+            worst_gt_path = os.path.join(output_dir, f"test_worst_gt_{worst_idx}.png")
             Image.fromarray(worst_orig).save(worst_orig_path)
             Image.fromarray(worst_pred).save(worst_pred_path)
+            Image.fromarray(worst_gt).save(worst_gt_path)
             extremes_dict["worst"]["orig_path"] = worst_orig_path
             extremes_dict["worst"]["pred_path"] = worst_pred_path
+            extremes_dict["worst"]["gt_path"] = worst_gt_path
 
         return float(avg_iou), float(avg_dice), extremes_dict

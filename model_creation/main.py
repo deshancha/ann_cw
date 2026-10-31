@@ -35,6 +35,7 @@ def main():
             "pipeline",
             "check_timm",
             "benchmark",
+            "xai",
         ],
         help="Task (default: train)",
     )
@@ -48,6 +49,7 @@ def main():
         os.path.join(root_dir, "config", "train", args.env),
         os.path.join(root_dir, "config", "test", args.env),
         os.path.join(root_dir, "config", "benchmark", args.env),
+        os.path.join(root_dir, "config", "xai", args.env),
         os.path.join(CURRENT_DIR, args.env),
     ]
     env_file = next((os.path.abspath(p) for p in candidate_paths if os.path.isfile(p)), None)
@@ -276,6 +278,33 @@ def main():
             device=cfg["device"],
             num_samples=samples,
             output_dir=cfg["output_dir"],
+        )
+
+    elif args.task == "xai":
+        usecase = container.xai_gradcam_usecase()
+        xai_out_dir = os.path.join(CURRENT_DIR, "output", "xai")
+
+        best_orig = os.getenv("BEST_ORIG_PATH")
+        worst_orig = os.getenv("WORST_ORIG_PATH")
+        best_gt = os.getenv("BEST_GT_PATH")
+        worst_gt = os.getenv("WORST_GT_PATH")
+
+        best_orig_path = os.path.abspath(os.path.join(root_dir, best_orig)) if not os.path.isabs(best_orig) else best_orig
+        worst_orig_path = os.path.abspath(os.path.join(root_dir, worst_orig)) if not os.path.isabs(worst_orig) else worst_orig
+        best_gt_path = os.path.abspath(os.path.join(root_dir, best_gt)) if not os.path.isabs(best_gt) else best_gt
+        worst_gt_path = os.path.abspath(os.path.join(root_dir, worst_gt)) if not os.path.isabs(worst_gt) else worst_gt
+
+        usecase.execute(
+            checkpoint_path=target_pt_path,
+            best_orig_path=best_orig_path,
+            worst_orig_path=worst_orig_path,
+            best_gt_path=best_gt_path,
+            worst_gt_path=worst_gt_path,
+            model_type=model_type,
+            width=cfg["width"],
+            img_size=cfg["img_size"],
+            device=cfg["device"],
+            output_dir=xai_out_dir,
         )
 
 
