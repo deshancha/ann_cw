@@ -6,12 +6,10 @@
 
 ```
 source .venv/bin/activate
-python model_creation/main.py --env config/train/.env.quick --task train
-python model_creation/main.py --env config/train/.env.quick --task validate
-python model_creation/main.py --env config/train/.env.quick --task visualize
-python model_creation/main.py --env config/train/.env.quick --task export_coreml
-python model_creation/main.py --env config/train/.env.quick --task export_tflite
-python model_creation/main.py --env config/train/.env.quick --task pipeline
+python model_creation/main.py --env config/train/.env.v1.0 --task train
+python model_creation/main.py --env config/train/.env.v1.1 --task train
+python model_creation/main.py --env config/train/.env.v1.2 --task train
+python model_creation/main.py --env config/train/.env.v1.3 --task train
 
 sh ./config/hf_get_all.sh
 python model_creation/main.py --env config/test/.env.v1.0 --task test
@@ -26,18 +24,32 @@ python model_creation/main.py --env config/benchmark/.env.v1.2 --task benchmark
 python model_creation/main.py --env config/benchmark/.env.v1.3 --task benchmark
 
 sh ./config/hf_get_all.sh
-python model_creation/main.py --env config/xai/.env.xai --task xai
+python model_creation/main.py --env config/xai/.env.v1.0 --task xai
+python model_creation/main.py --env config/xai/.env.v1.1 --task xai
+python model_creation/main.py --env config/xai/.env.v1.2 --task xai
+python model_creation/main.py --env config/xai/.env.v1.3 --task xai
+
+# Other commands
+python model_creation/main.py --env config/train/.env.quick --task train
+python model_creation/main.py --env config/train/.env.quick --task validate
+python model_creation/main.py --env config/train/.env.quick --task visualize
+python model_creation/main.py --env config/train/.env.quick --task export_coreml
+python model_creation/main.py --env config/train/.env.quick --task export_tflite
+python model_creation/main.py --env config/train/.env.quick --task pipeline
 ```
 
-# Fetch all models
+# Fetch Dataset & Models
 
 From [Hugging Face](https://huggingface.co/deshanc/unet-mobilenet-portrait-segmentation).
 
 ```bash
-# 1. Fetch ALL 4 trained checkpoints into model_creation/output/all_trained/
+# 1. Fetch full Matting Human dataset into data/matting_human/
+sh ./config/hf_get_dataset.sh
+
+# 2. Fetch ALL 4 trained checkpoints into model_creation/output/all_trained/
 sh ./config/hf_get_all.sh
 
-# 2. Fetch specific version into iOS app (v1.0, v1.1, v1.2, v1.3)
+# 3. Fetch specific version into iOS app (v1.0, v1.1, v1.2, v1.3)
 sh ./app/config/hf_get.sh v1.2    # app/core_ios/Model/UNetMobileNetFull.mlpackage
 ```
 
