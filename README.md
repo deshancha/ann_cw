@@ -24,9 +24,26 @@ python model_creation/main.py --env config/benchmark/.env.v1.2 --task benchmark
 python model_creation/main.py --env config/benchmark/.env.v1.3 --task benchmark
 
 sh ./config/hf_get_all.sh
+python model_creation/main.py --env config/test/.env.v1.0 --task test
+python model_creation/main.py --env config/test/.env.v1.1 --task test
+python model_creation/main.py --env config/test/.env.v1.2 --task test
+python model_creation/main.py --env config/test/.env.v1.3 --task test
+
+sh ./config/hf_get_all.sh
+# model 1.0
+python model_creation/main.py --env config/test/.env.v1.0 --task test
 python model_creation/main.py --env config/xai/.env.v1.0 --task xai
+
+# model 1.1
+python model_creation/main.py --env config/test/.env.v1.1 --task test
 python model_creation/main.py --env config/xai/.env.v1.1 --task xai
+
+# model 1.2
+python model_creation/main.py --env config/test/.env.v1.2 --task test
 python model_creation/main.py --env config/xai/.env.v1.2 --task xai
+
+# model 1.3
+python model_creation/main.py --env config/test/.env.v1.3 --task test
 python model_creation/main.py --env config/xai/.env.v1.3 --task xai
 
 # Other commands
