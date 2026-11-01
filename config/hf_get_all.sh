@@ -14,5 +14,6 @@ get "v1.0" "unet_mobilenetv1_full_best.pt" "v1.0_mobilenetv1_w1.0_best.pt"
 get "v1.1" "unet_mobilenetv1_full_best.pt" "v1.1_mobilenetv1_w1.0_best.pt"
 get "v1.2" "unet_mobilenetv3_best.pt"      "v1.2_mobilenetv3_best.pt"
 get "v1.3" "unet_mobilenetv1_best.pt"      "v1.3_mobilenetv1_w0.5_best.pt"
+get "v1.4" "unet_mobilenetv3_best.pt"      "v1.4_mobilenetv3_best.pt"
 
 echo "Done! Checkpoints saved to $TARGET"

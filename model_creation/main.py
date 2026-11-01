@@ -36,6 +36,8 @@ def main():
             "check_timm",
             "benchmark",
             "xai",
+            "compare_spatial",
+            "compare_mask",
         ],
         help="Task (default: train)",
     )
@@ -305,6 +307,24 @@ def main():
             img_size=cfg["img_size"],
             device=cfg["device"],
             output_dir=xai_out_dir,
+        )
+
+    elif args.task == "compare_spatial":
+        usecase = container.spatial_check_usecase()
+        usecase.execute(
+            img_size=cfg["img_size"],
+            batch_size=cfg["batch_size"],
+            output_dir=cfg["metrics_dir"],
+            max_samples=0,
+        )
+
+    elif args.task == "compare_mask":
+        usecase = container.compare_mask_usecase()
+        usecase.execute(
+            img_size=cfg["img_size"],
+            batch_size=cfg["batch_size"],
+            output_dir=cfg["metrics_dir"],
+            max_samples_per_split=0,
         )
 
 

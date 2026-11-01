@@ -10,12 +10,14 @@ python model_creation/main.py --env config/train/.env.v1.0 --task train
 python model_creation/main.py --env config/train/.env.v1.1 --task train
 python model_creation/main.py --env config/train/.env.v1.2 --task train
 python model_creation/main.py --env config/train/.env.v1.3 --task train
+python model_creation/main.py --env config/train/.env.v1.4 --task train
 
 sh ./config/hf_get_all.sh
 python model_creation/main.py --env config/test/.env.v1.0 --task test
 python model_creation/main.py --env config/test/.env.v1.1 --task test
 python model_creation/main.py --env config/test/.env.v1.2 --task test
 python model_creation/main.py --env config/test/.env.v1.3 --task test
+python model_creation/main.py --env config/test/.env.v1.4 --task test
 
 sh ./config/hf_get_all.sh
 python model_creation/main.py --env config/benchmark/.env.v1.0 --task benchmark
@@ -47,6 +49,8 @@ python model_creation/main.py --env config/test/.env.v1.3 --task test
 python model_creation/main.py --env config/xai/.env.v1.3 --task xai
 
 # Other commands
+python model_creation/main.py --task compare_spatial
+python model_creation/main.py --task compare_mask
 python model_creation/main.py --env config/train/.env.quick --task train
 python model_creation/main.py --env config/train/.env.quick --task validate
 python model_creation/main.py --env config/train/.env.quick --task visualize

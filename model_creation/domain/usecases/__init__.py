@@ -7,6 +7,7 @@ from domain.usecases.export_coreml_usecase import ExportCoreMLUseCase
 from domain.usecases.export_tflite_usecase import ExportTFLiteUseCase
 from domain.usecases.eval_grabcut_benchmark_usecase import EvalGrabcutBenchmarkUseCase
 from domain.usecases.xai_gradcam_usecase import XAIGradCamUseCase
+from domain.usecases.eda import SpatialCheckUseCase, CompareMaskUseCase
 
 __all__ = [
     "CheckTimmUseCase",
@@ -18,4 +19,6 @@ __all__ = [
     "ExportTFLiteUseCase",
     "EvalGrabcutBenchmarkUseCase",
     "XAIGradCamUseCase",
+    "SpatialCheckUseCase",
+    "CompareMaskUseCase",
 ]

@@ -27,6 +27,8 @@ from domain.usecases.export_coreml_usecase import ExportCoreMLUseCase
 from domain.usecases.export_tflite_usecase import ExportTFLiteUseCase
 from domain.usecases.eval_grabcut_benchmark_usecase import EvalGrabcutBenchmarkUseCase
 from domain.usecases.xai_gradcam_usecase import XAIGradCamUseCase
+from domain.usecases.eda.spatial_check_usecase import SpatialCheckUseCase
+from domain.usecases.eda.compare_mask_usecase import CompareMaskUseCase
 
 
 def init_output_directories():
@@ -169,5 +171,19 @@ class AppContainer(containers.DeclarativeContainer, metaclass=AppContainerMeta):
     xai_gradcam_usecase = providers.Factory(
         XAIGradCamUseCase,
         explainable_ai=explainable_ai,
+        logger=logger,
+    )
+
+    # Step 8: Spatial Check (EDA)
+    spatial_check_usecase = providers.Factory(
+        SpatialCheckUseCase,
+        data_loader=matting_human_loader,
+        logger=logger,
+    )
+
+    # Step 9: Compare Mask (EDA)
+    compare_mask_usecase = providers.Factory(
+        CompareMaskUseCase,
+        data_loader=matting_human_loader,
         logger=logger,
     )
