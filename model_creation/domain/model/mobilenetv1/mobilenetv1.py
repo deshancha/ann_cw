@@ -35,17 +35,22 @@ def conv_depth_wise_seperable(inp: int, out: int, stride: int) -> nn.Sequential:
 
 # (in_channels, out_channels, stride)
 CONFIG_FOR_13_DEPTHWISE_SEPERABLE_BLOCKS = [
+    # Stage 0 (1 block) ──> Output: (64, 112, 112)
     (32, 64, 1),
+    # Stage 1 (2 blocks) ──> Output: (128, 56, 56)
     (64, 128, 2),
     (128, 128, 1),
+    # Stage 2 (2 blocks) ──> Output: (256, 28, 28)
     (128, 256, 2),
     (256, 256, 1),
+    # Stage 3 (6 blocks) ──> Output: (512, 14, 14)
     (256, 512, 2),
     (512, 512, 1),
     (512, 512, 1),
     (512, 512, 1),
     (512, 512, 1),
     (512, 512, 1),
+    # Stage 4 (2 blocks) ──> Output: (1024, 7, 7)
     (512, 1024, 2),
     (1024, 1024, 1),
 ]
