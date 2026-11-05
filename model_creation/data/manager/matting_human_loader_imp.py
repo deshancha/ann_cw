@@ -108,12 +108,12 @@ class MattingHumanLoaderImp(ISegmentationLoader):
         val_mask_dir = os.path.join(self.data_dir, "validation", "matting")
 
         # training pairs
-        train_imgs = sorted(glob.glob(os.path.join(train_img_dir, "*.*")))
-        train_masks = sorted(glob.glob(os.path.join(train_mask_dir, "*.*")))
+        train_imgs = sorted(glob.glob(os.path.join(train_img_dir, "*.*")), key=self._natural_key)
+        train_masks = sorted(glob.glob(os.path.join(train_mask_dir, "*.*")), key=self._natural_key)
 
         # validation pairs
-        val_imgs = sorted(glob.glob(os.path.join(val_img_dir, "*.*")))
-        val_masks = sorted(glob.glob(os.path.join(val_mask_dir, "*.*")))
+        val_imgs = sorted(glob.glob(os.path.join(val_img_dir, "*.*")), key=self._natural_key)
+        val_masks = sorted(glob.glob(os.path.join(val_mask_dir, "*.*")), key=self._natural_key)
 
         assert len(train_imgs) == len(train_masks) and len(train_imgs) > 0, "No training samples found!"
         assert len(val_imgs) == len(val_masks) and len(val_imgs) > 0, "No validation samples found!"
@@ -152,6 +152,11 @@ class MattingHumanLoaderImp(ISegmentationLoader):
 
         return train_loader, val_loader
 
+    @staticmethod
+    def _natural_key(path: str):
+        base = os.path.splitext(os.path.basename(path))[0]
+        return int(base) if base.isdigit() else base
+
     def get_test_loader(
         self,
         img_size: int,
@@ -172,8 +177,8 @@ class MattingHumanLoaderImp(ISegmentationLoader):
             f"Test dir not found : {self.data_dir}/test"
         )
 
-        test_imgs = sorted(glob.glob(os.path.join(test_img_dir, "*.*")))
-        test_masks = sorted(glob.glob(os.path.join(test_mask_dir, "*.*")))
+        test_imgs = sorted(glob.glob(os.path.join(test_img_dir, "*.*")), key=self._natural_key)
+        test_masks = sorted(glob.glob(os.path.join(test_mask_dir, "*.*")), key=self._natural_key)
 
         assert len(test_imgs) == len(test_masks) and len(test_imgs) > 0, "No test imgs foun"
 

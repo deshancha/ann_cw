@@ -169,6 +169,11 @@ class PersonSegmentationLoaderImp(ISegmentationLoader):
 
         return train_loader, val_loader
 
+    @staticmethod
+    def _natural_key(path: str):
+        base = os.path.splitext(os.path.basename(path))[0]
+        return int(base) if base.isdigit() else base
+
     def get_test_loader(
         self,
         img_size: int,
@@ -186,8 +191,8 @@ class PersonSegmentationLoaderImp(ISegmentationLoader):
             test_img_dir = os.path.join(self.data_dir, "val", "images")
             test_mask_dir = os.path.join(self.data_dir, "val", "masks")
 
-        img_files = sorted([os.path.join(test_img_dir, f) for f in os.listdir(test_img_dir) if not f.startswith(".")])
-        mask_files = sorted([os.path.join(test_mask_dir, f) for f in os.listdir(test_mask_dir) if not f.startswith(".")])
+        img_files = sorted([os.path.join(test_img_dir, f) for f in os.listdir(test_img_dir) if not f.startswith(".")], key=self._natural_key)
+        mask_files = sorted([os.path.join(test_mask_dir, f) for f in os.listdir(test_mask_dir) if not f.startswith(".")], key=self._natural_key)
 
         if max_test_samples and max_test_samples > 0:
             img_files = img_files[:max_test_samples]
