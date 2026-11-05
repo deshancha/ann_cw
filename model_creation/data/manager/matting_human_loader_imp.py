@@ -189,6 +189,4 @@ class MattingHumanLoaderImp(ISegmentationLoader):
             norm=norm,
         )
 
-        self.logger.info(f"Loaded held-out test dataset: {len(test_ds)} samples (leakage-free)")
-
         return DataLoader(test_ds, batch_size=batch_size, shuffle=False, num_workers=0)
