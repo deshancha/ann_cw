@@ -76,6 +76,7 @@ typedef NS_ENUM(NSInteger, PipeLineType) {
 
 @property(weak, nonatomic) IBOutlet UIImageView *maskView;
 
+@property(weak, nonatomic) IBOutlet UILabel *fpsLabel;
 @end
 
 @implementation PlayerVC
@@ -219,6 +220,11 @@ typedef NS_ENUM(NSInteger, PipeLineType) {
   mlContour = [[MLContour alloc] initWithDelegate:receiveVideoConsumer];
 
   mlContour.maskImageView = _maskView;
+
+  __weak typeof(self) weakSelf = self;
+  receiveVideoConsumer.onFPSUpdate = ^(NSInteger videoFPS, NSInteger maskFPS) {
+    weakSelf.fpsLabel.text = [NSString stringWithFormat:@"R:%ld, I:%ld", (long)videoFPS, (long)maskFPS];
+  };
 
   videoSenderWrapper = NULL;
   videoReceiverWrapper = NULL;

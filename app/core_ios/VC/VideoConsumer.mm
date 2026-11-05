@@ -6,6 +6,7 @@
 //
 
 #import "VideoConsumer.h"
+#import <QuartzCore/QuartzCore.h>
 #include "IDataConvert.h"
 #include "DatatoCVPixelBufferRef.h"
 
@@ -17,6 +18,11 @@ using namespace AvatarIniOS::wrapper;
     NSObject* maskLock;
     
     CVPixelBufferRef maskPixelBuffer;
+    
+    NSObject* fpsLock;
+    NSInteger _videoFrameCount;
+    NSInteger _maskFrameCount;
+    NSTimeInterval _lastFPSTime;
 }
 @end
 
@@ -30,6 +36,10 @@ using namespace AvatarIniOS::wrapper;
     if (self) {
         maskLock = [[NSObject alloc] init];
         maskPixelBuffer = NULL;
+        fpsLock = [[NSObject alloc] init];
+        _videoFrameCount = 0;
+        _maskFrameCount = 0;
+        _lastFPSTime = 0;
     }
     
     return self;
@@ -59,6 +69,7 @@ using namespace AvatarIniOS::wrapper;
 //---------------------------------------------------
 
 -(void) clean {
+    self.onFPSUpdate = nil;
     delete dataConverter;
     dataConverter = NULL;
     @synchronized (maskLock) {
@@ -71,6 +82,41 @@ using namespace AvatarIniOS::wrapper;
 
 - (void)dealloc {
     [self clean];
+}
+
+//---------------------------------------------------
+
+- (void)updateFPSForVideoFrame:(BOOL)isVideo {
+    @synchronized (fpsLock) {
+        if (isVideo) {
+            _videoFrameCount++;
+        } else {
+            _maskFrameCount++;
+        }
+        
+        NSTimeInterval now = CACurrentMediaTime();
+        if (_lastFPSTime == 0) {
+            _lastFPSTime = now;
+            return;
+        }
+        
+        NSTimeInterval elapsed = now - _lastFPSTime;
+        if (elapsed >= 1.0) {
+            NSInteger videoFPS = (NSInteger)round(_videoFrameCount / elapsed);
+            NSInteger maskFPS = (NSInteger)round(_maskFrameCount / elapsed);
+            
+            _videoFrameCount = 0;
+            _maskFrameCount = 0;
+            _lastFPSTime = now;
+            
+            if (self.onFPSUpdate) {
+                VideoConsumerFPSBlock block = self.onFPSUpdate;
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    block(videoFPS, maskFPS);
+                });
+            }
+        }
+    }
 }
 
 //---------------------------------------------------
@@ -93,6 +139,7 @@ using namespace AvatarIniOS::wrapper;
     @synchronized (maskLock) {
         [appSinkGLView displayPixelBuffer:ref mask:maskPixelBuffer];
     }
+    [self updateFPSForVideoFrame:YES];
     //[appSinkGLView displayPixelBuffer:ref];
 }
 
@@ -113,6 +160,8 @@ using namespace AvatarIniOS::wrapper;
             maskPixelBuffer = maskRef;
         }
     }
+    //[NSThread sleepForTimeInterval:0.05];
+    [self updateFPSForVideoFrame:NO];
 }
 
 

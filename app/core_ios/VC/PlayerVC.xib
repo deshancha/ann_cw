@@ -2,6 +2,7 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="24765" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina5_9" orientation="landscape" appearance="light"/>
     <dependencies>
+        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24743"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -9,6 +10,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="PlayerVC">
             <connections>
+                <outlet property="fpsLabel" destination="b92-pT-3vB" id="5Ot-Ch-uxe"/>
                 <outlet property="maskImage" destination="y8I-gO-NTj" id="MDf-cQ-9sx"/>
                 <outlet property="maskView" destination="N6b-0b-6PQ" id="ZwK-Rr-fqf"/>
                 <outlet property="rotateSlidebar" destination="qVb-8A-ijP" id="kIu-sZ-cHy"/>
@@ -85,6 +87,26 @@
                         <action selector="mask3DEnable:" destination="-1" eventType="valueChanged" id="fSD-8N-c4A"/>
                     </connections>
                 </switch>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hfE-01-nTQ">
+                    <rect key="frame" x="127" y="57" width="83" height="30"/>
+                    <state key="normal" title="Background"/>
+                    <connections>
+                        <action selector="changeBackground:" destination="-1" eventType="touchUpInside" id="OaN-Qx-ENL"/>
+                    </connections>
+                </button>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Qhg-2w-x04">
+                    <rect key="frame" x="58" y="94" width="74" height="30"/>
+                    <state key="normal" title="Show/Hide"/>
+                    <connections>
+                        <action selector="btnShowHideMask:" destination="-1" eventType="touchUpInside" id="Fwe-Yl-8YW"/>
+                    </connections>
+                </button>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="b92-pT-3vB" userLabel="FPS">
+                    <rect key="frame" x="70" y="94" width="52" height="26.333333333333329"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="22"/>
+                    <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <nil key="highlightedColor"/>
+                </label>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="UTv-PF-oJa">
                     <rect key="frame" x="390" y="345" width="32" height="30"/>
                     <constraints>
@@ -102,20 +124,6 @@
                         <action selector="anchotShowHideBtn:" destination="-1" eventType="touchUpInside" id="cHp-CS-VVv"/>
                     </connections>
                 </button>
-                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hfE-01-nTQ">
-                    <rect key="frame" x="127" y="57" width="83" height="30"/>
-                    <state key="normal" title="Background"/>
-                    <connections>
-                        <action selector="changeBackground:" destination="-1" eventType="touchUpInside" id="OaN-Qx-ENL"/>
-                    </connections>
-                </button>
-                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Qhg-2w-x04">
-                    <rect key="frame" x="58" y="94" width="74" height="30"/>
-                    <state key="normal" title="Show/Hide"/>
-                    <connections>
-                        <action selector="btnShowHideMask:" destination="-1" eventType="touchUpInside" id="Fwe-Yl-8YW"/>
-                    </connections>
-                </button>
             </subviews>
             <viewLayoutGuide key="safeArea" id="Q5M-cg-NOt"/>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -126,6 +134,7 @@
                 <constraint firstItem="hfE-01-nTQ" firstAttribute="leading" secondItem="VNo-24-v9X" secondAttribute="trailing" constant="8" id="6o7-s5-CKs"/>
                 <constraint firstAttribute="trailing" secondItem="y8I-gO-NTj" secondAttribute="trailing" id="9aa-w3-4gM"/>
                 <constraint firstItem="jmu-U0-Sat" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="9bm-D4-JRq"/>
+                <constraint firstItem="b92-pT-3vB" firstAttribute="leading" secondItem="Q5M-cg-NOt" secondAttribute="leading" constant="20" id="AIj-ax-hxB"/>
                 <constraint firstAttribute="bottom" secondItem="UTv-PF-oJa" secondAttribute="bottom" id="AYL-WU-B9d"/>
                 <constraint firstItem="Qhg-2w-x04" firstAttribute="leading" secondItem="Q5M-cg-NOt" secondAttribute="leading" constant="8" id="Bkr-Uw-RY6"/>
                 <constraint firstItem="eeX-vw-ecy" firstAttribute="leading" secondItem="Q5M-cg-NOt" secondAttribute="leading" id="Cai-He-RkV"/>
@@ -139,6 +148,7 @@
                 <constraint firstItem="VNo-24-v9X" firstAttribute="top" secondItem="Q5M-cg-NOt" secondAttribute="top" constant="8" id="Vr8-CS-VfZ"/>
                 <constraint firstItem="Q5M-cg-NOt" firstAttribute="bottom" secondItem="7qi-N1-0ym" secondAttribute="bottom" constant="9" id="Wx8-V6-HAk"/>
                 <constraint firstItem="7qi-N1-0ym" firstAttribute="trailing" secondItem="Q5M-cg-NOt" secondAttribute="trailing" id="X5A-gP-0jS"/>
+                <constraint firstItem="b92-pT-3vB" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="94" id="YYT-2t-4Vy"/>
                 <constraint firstItem="Q5M-cg-NOt" firstAttribute="bottom" secondItem="eeX-vw-ecy" secondAttribute="bottom" id="eh2-bh-695"/>
                 <constraint firstItem="UTv-PF-oJa" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="gQb-FF-7Lp"/>
                 <constraint firstAttribute="bottom" secondItem="jmu-U0-Sat" secondAttribute="bottom" id="iuE-rR-uqS"/>
@@ -154,9 +164,9 @@
                     <exclude reference="y8I-gO-NTj"/>
                     <exclude reference="eeX-vw-ecy"/>
                     <exclude reference="7qi-N1-0ym"/>
+                    <exclude reference="Qhg-2w-x04"/>
                     <exclude reference="UTv-PF-oJa"/>
                     <exclude reference="tN0-nI-uKO"/>
-                    <exclude reference="Qhg-2w-x04"/>
                 </mask>
             </variation>
             <point key="canvasLocation" x="131.52709359605913" y="82.400000000000006"/>
