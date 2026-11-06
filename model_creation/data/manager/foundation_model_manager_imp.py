@@ -6,7 +6,7 @@ import time
 from typing import List, Dict, Any, Tuple, Optional
 import numpy as np
 import cv2
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image
 import torch
 
 from core.util.logger import ILogger
@@ -94,29 +94,19 @@ class FoundationModelManagerImp(IFoundationModelManager):
             "predictions": predictions,
         }
 
-    def visualize_foundation_comparison(
-        self,
-        samples: List[Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, float, float]],
-        output_path: str,
-    ) -> None:
-        n_samples = len(samples)
-        if n_samples == 0:
-            return
+    def visualize_foundation_comparison(self, samples: List[Any], output_path: str) -> None:
+        rows = []
+        for img, gt, unet, msam, u_iou, m_iou, label in samples:
+            gt_rgb = np.repeat((gt * 255).astype(np.uint8)[:, :, None], 3, axis=2)
+            u_rgb = np.repeat((unet * 255).astype(np.uint8)[:, :, None], 3, axis=2)
+            m_rgb = np.repeat((msam * 255).astype(np.uint8)[:, :, None], 3, axis=2)
 
-        row_images = []
-        for img_np, gt_mask, unet_mask, msam_mask, unet_iou, msam_iou in samples:
-            h, w = img_np.shape[:2]
+            img_draw = img.copy()
+            cv2.putText(img_draw, label, (10, 25), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2)
+            cv2.putText(u_rgb, f"IoU: {u_iou * 100:.1f}%", (10, 25), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
+            cv2.putText(m_rgb, f"IoU: {m_iou * 100:.1f}%", (10, 25), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 255), 2)
 
-            gt_rgb = np.repeat((gt_mask * 255).astype(np.uint8)[:, :, np.newaxis], 3, axis=2)
-            unet_rgb = np.repeat((unet_mask * 255).astype(np.uint8)[:, :, np.newaxis], 3, axis=2)
-            msam_rgb = np.repeat((msam_mask * 255).astype(np.uint8)[:, :, np.newaxis], 3, axis=2)
+            rows.append(np.hstack([img_draw, gt_rgb, u_rgb, m_rgb]))
 
-            # Draw using opencv
-            cv2.putText(unet_rgb, f"IoU: {unet_iou*100:.1f}%", (10, 25), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2, cv2.LINE_AA)
-            cv2.putText(msam_rgb, f"IoU: {msam_iou*100:.1f}%", (10, 25), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 255), 2, cv2.LINE_AA)
-
-            row = np.hstack([img_np, gt_rgb, unet_rgb, msam_rgb])
-            row_images.append(row)
-
-        combined = np.vstack(row_images)
-        Image.fromarray(combined).save(output_path)
+        if rows:
+            Image.fromarray(np.vstack(rows)).save(output_path)

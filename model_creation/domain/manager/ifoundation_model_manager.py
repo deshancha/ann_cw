@@ -18,11 +18,11 @@ class IFoundationModelManager(ABC):
     ) -> Dict[str, Any]:
         pass
 
-    # save GT, UNET, MobSam side by side
+    # save GT, UNET, MobSam side by side best/worst found in unet testing
     @abstractmethod
     def visualize_foundation_comparison(
         self,
-        samples: List[Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, float, float]],
+        samples: List[Any],
         output_path: str,
     ) -> None:
         pass
