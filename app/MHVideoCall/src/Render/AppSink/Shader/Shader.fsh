@@ -113,7 +113,8 @@ void main()
             return;
         }
         
-        if (maskVal < 0.5) {
+        // to fix residual edge noise into background blur
+        if (maskVal < 0.9) {
             // Background: Gaussian Blur or replacement color
             vec2 texC = texCoords;
             vec4 texCol = vec4(textureColor, 1.0);
