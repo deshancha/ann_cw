@@ -26,6 +26,7 @@ python model_creation/main.py --env config/benchmark/.env.v1.2 --task benchmark
 python model_creation/main.py --env config/benchmark/.env.v1.3 --task benchmark
 python model_creation/main.py --env config/benchmark/.env.v1.4 --task benchmark
 
+# XAI
 sh ./config/hf_get_all.sh
 # model 1.0
 python model_creation/main.py --env config/test/.env.v1.0 --task test
@@ -47,6 +48,9 @@ python model_creation/main.py --env config/xai/.env.v1.3 --task xai
 python model_creation/main.py --env config/test/.env.v1.4 --task test
 python model_creation/main.py --env config/xai/.env.v1.4 --task xai
 
+# Foundation Benchmark (MobileSAM vs Custom UNET)
+python model_creation/main.py --env config/foundation/.env.foundation --task foundation
+
 # Other commands
 python model_creation/main.py --task compare_spatial
 python model_creation/main.py --task compare_mask
@@ -60,16 +64,20 @@ python model_creation/main.py --env config/train/.env.quick --task pipeline
 
 # Fetch Dataset & Models
 
-From [Hugging Face](https://huggingface.co/deshanc/unet-mobilenet-portrait-segmentation).
+From [Hugging Face](https://huggingface.co/deshanc/unet-mobilenet-portrait-segmentation) and GitHub Releases.
 
 ```bash
 # 1. Fetch full Matting Human dataset into data/matting_human/
 sh ./config/hf_get_dataset.sh
 
-# 2. Fetch ALL 4 trained checkpoints into model_creation/output/all_trained/
+# 2. Fetch ALL trained checkpoints (v1.0-v1.4) AND MobileSAM 
 sh ./config/hf_get_all.sh
 
-# 3. Fetch specific version into iOS app (v1.0, v1.1, v1.2, v1.3)
+# 3. Fetch MobileSAM Foundation Model weights directly
+curl -L -o model_creation/output/checkpoints/mobile_sam.pt \
+  https://github.com/ChaoningZhang/MobileSAM/raw/master/weights/mobile_sam.pt
+
+# 4. Fetch specific version into iOS app (v1.0, v1.1, v1.2, v1.3)
 sh ./app/config/hf_get.sh v1.2    # app/core_ios/Model/UNetMobileNetFull.mlpackage
 ```
 
