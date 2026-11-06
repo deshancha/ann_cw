@@ -4,6 +4,9 @@
 import argparse
 import os
 import sys
+
+os.environ.setdefault("KERAS_HOME", "/tmp/.keras")
+
 from dotenv import load_dotenv
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -300,9 +303,23 @@ def main():
         )
         box_margin = float(os.getenv("BOX_MARGIN", "0.05"))
 
+        best_orig = os.getenv("BEST_ORIG_PATH")
+        worst_orig = os.getenv("WORST_ORIG_PATH")
+        best_gt = os.getenv("BEST_GT_PATH")
+        worst_gt = os.getenv("WORST_GT_PATH")
+
+        best_orig_path = os.path.abspath(os.path.join(root_dir, best_orig)) if best_orig and not os.path.isabs(best_orig) else best_orig
+        worst_orig_path = os.path.abspath(os.path.join(root_dir, worst_orig)) if worst_orig and not os.path.isabs(worst_orig) else worst_orig
+        best_gt_path = os.path.abspath(os.path.join(root_dir, best_gt)) if best_gt and not os.path.isabs(best_gt) else best_gt
+        worst_gt_path = os.path.abspath(os.path.join(root_dir, worst_gt)) if worst_gt and not os.path.isabs(worst_gt) else worst_gt
+
         usecase.execute(
             unet_checkpoint_path=target_pt_path,
             mobilesam_checkpoint_path=mobilesam_pt_path,
+            best_orig_path=best_orig_path,
+            worst_orig_path=worst_orig_path,
+            best_gt_path=best_gt_path,
+            worst_gt_path=worst_gt_path,
             model_type=model_type,
             width=cfg["width"],
             img_size=cfg["img_size"],
