@@ -35,6 +35,7 @@ def main():
             "pipeline",
             "check_timm",
             "benchmark",
+            "foundation",
             "xai",
             "compare_spatial",
             "compare_mask",
@@ -51,6 +52,7 @@ def main():
         os.path.join(root_dir, "config", "train", args.env),
         os.path.join(root_dir, "config", "test", args.env),
         os.path.join(root_dir, "config", "benchmark", args.env),
+        os.path.join(root_dir, "config", "foundation", args.env),
         os.path.join(root_dir, "config", "xai", args.env),
         os.path.join(CURRENT_DIR, args.env),
     ]
@@ -100,6 +102,9 @@ def main():
         ),
         "metrics_dir": os.path.abspath(
             os.path.join(CURRENT_DIR, "..", os.getenv("METRICS_DIR", "model_creation/output/metrics"))
+        ),
+        "foundation_dir": os.path.abspath(
+            os.path.join(CURRENT_DIR, "..", os.getenv("FOUNDATION_DIR", "model_creation/output/foundation"))
         ),
         "experiments_dir": os.path.abspath(
             os.path.join(CURRENT_DIR, "..", os.getenv("EXPERIMENTS_DIR", "model_creation/output/experiments"))
@@ -280,6 +285,31 @@ def main():
             device=cfg["device"],
             num_samples=samples,
             output_dir=cfg["output_dir"],
+        )
+
+    elif args.task == "foundation":
+        usecase = container.eval_foundation_benchmark_usecase()
+        samples = int(os.getenv("MAX_BENCHMARK_SAMPLES", "50"))
+        mobilesam_checkpoint = os.getenv(
+            "MOBILESAM_CHECKPOINT", "model_creation/output/checkpoints/mobile_sam.pt"
+        )
+        mobilesam_pt_path = (
+            os.path.abspath(os.path.join(root_dir, mobilesam_checkpoint))
+            if not os.path.isabs(mobilesam_checkpoint)
+            else mobilesam_checkpoint
+        )
+        box_margin = float(os.getenv("BOX_MARGIN", "0.05"))
+
+        usecase.execute(
+            unet_checkpoint_path=target_pt_path,
+            mobilesam_checkpoint_path=mobilesam_pt_path,
+            model_type=model_type,
+            width=cfg["width"],
+            img_size=cfg["img_size"],
+            device=cfg["device"],
+            num_samples=samples,
+            box_margin=box_margin,
+            output_dir=cfg["foundation_dir"],
         )
 
     elif args.task == "xai":
