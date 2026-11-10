@@ -70,15 +70,15 @@ From [Hugging Face](https://huggingface.co/deshanc/unet-mobilenet-portrait-segme
 # 1. Fetch full Matting Human dataset into data/matting_human/
 sh ./config/hf_get_dataset.sh
 
-# 2. Fetch ALL trained checkpoints (v1.0-v1.4) AND MobileSAM 
+# 2. Fetch ALL trained checkpoints (v1.0-v1.5) AND MobileSAM 
 sh ./config/hf_get_all.sh
 
 # 3. Fetch MobileSAM Foundation Model weights directly
 curl -L -o model_creation/output/checkpoints/mobile_sam.pt \
   https://github.com/ChaoningZhang/MobileSAM/raw/master/weights/mobile_sam.pt
 
-# 4. Fetch specific version into iOS app (v1.0, v1.1, v1.2, v1.3)
-sh ./app/config/hf_get.sh v1.2    # app/core_ios/Model/UNetMobileNetFull.mlpackage
+# 4. Fetch specific version into iOS app (v1.0, v1.1, v1.2, v1.3, v1.4, v1.5)
+sh ./app/config/hf_get.sh v1.5    # app/core_ios/Model/UNetMobileNetFull.mlpackage
 ```
 
 # Publish Model to Hugging Face
@@ -91,14 +91,14 @@ HF_TOKEN=HUGGING_FACE_WRITABLE_ACCESS_TOKEN_HERE
 
 ```bash
 # Upload to Hugging Face
-sh ./app/config/hf_push.sh v1.4
+sh ./app/config/hf_push.sh v1.5
 
 # Can use HF CLI directly
-hf upload deshanc/unet-mobilenet-portrait-segmentation ./model_creation/output/checkpoints/ v1.4
+hf upload deshanc/unet-mobilenet-portrait-segmentation ./model_creation/output/checkpoints/ v1.5
 
 # Add to git for reproducability purposes
-git commit -m "Model v1.4: xxx"
-git tag -a v1.4 -m "v1.4 release"
+git commit -m "Model v1.5: Added 15% negative background samples to prevent false positive hallucinations"
+git tag -a v1.5 -m "v1.5 release"
 git push origin developer --tags
 ```
 
@@ -107,9 +107,9 @@ git push origin developer --tags
 Hosted on [Hugging Face](https://huggingface.co/deshanc/unet-mobilenet-portrait-segmentation).
 
 ```bash
-# Fetch v1.2 (default)`
+# Fetch v1.5 (default)`
 sh ./app/config/hf_get.sh
 
-# Fetch a version (v1.0, v1.1, v1.2, v1.3)
-sh ./app/config/hf_get.sh v1.2    #app/core_ios/Model/UNetMobileNetFull.mlpackage
+# Fetch a version (v1.0, v1.1, v1.2, v1.3, v1.4, v1.5)
+sh ./app/config/hf_get.sh v1.5    #app/core_ios/Model/UNetMobileNetFull.mlpackage
 ```
