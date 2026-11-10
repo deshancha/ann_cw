@@ -12,9 +12,6 @@ from core.util.logger import ILogger
 from domain.manager.imodel_creation import IModelCreation
 from domain.model.loss import calculate_iou_and_dice
 
-import onnx2tf
-import onnx2tf.onnx2tf as otf
-import onnx2tf.utils.common_functions as cf
 import coremltools as ct
 import glob
 import shutil
@@ -161,6 +158,13 @@ class ModelCreationImp(IModelCreation):
             output_names=["output_mask"],
             opset_version=13,
         )
+
+        # Lazy import for avode crash
+        import sys
+        sys.modules.setdefault("pyarrow", None)
+        import onnx2tf
+        import onnx2tf.onnx2tf as otf
+        import onnx2tf.utils.common_functions as cf
 
         # 2 Patch onnx2tf dummy test image and convert
         mock_fn = lambda: np.zeros((img_size, img_size, 3), dtype=np.float32)

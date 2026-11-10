@@ -6,6 +6,8 @@ import os
 import sys
 
 os.environ.setdefault("KERAS_HOME", "/tmp/.keras")
+# fix  mutex collision crash fix
+sys.modules.setdefault("pyarrow", None)
 
 from dotenv import load_dotenv
 
@@ -262,16 +264,7 @@ def main():
             width=cfg["width"],
         )
 
-        print(f"-------------- Export TensorFlow Lite ({model_type}) --------------\n")
-        tflite_uc = container.export_tflite_usecase()
-        tflite_path = os.path.join(cfg["checkpoints_dir"], f"{model_type}_segm_256.tflite")
-        tflite_uc.execute(
-            checkpoint_path=pt_to_use,
-            output_path=tflite_path,
-            model_type=model_type,
-            img_size=256,
-            width=cfg["width"],
-        )
+        
 
     elif args.task == "check_timm":
         usecase = container.check_timm_usecase()
