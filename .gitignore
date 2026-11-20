@@ -156,6 +156,7 @@ activemq-data/
 !config/train/.env*
 !config/benchmark/.env*
 !config/xai/.env*
+!config/foundation/.env*
 .envrc
 .venv
 env/
