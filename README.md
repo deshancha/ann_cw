@@ -25,6 +25,7 @@ python model_creation/main.py --env config/benchmark/.env.v1.1 --task benchmark
 python model_creation/main.py --env config/benchmark/.env.v1.2 --task benchmark
 python model_creation/main.py --env config/benchmark/.env.v1.3 --task benchmark
 python model_creation/main.py --env config/benchmark/.env.v1.4 --task benchmark
+python model_creation/main.py --env config/benchmark/.env.v1.5 --task benchmark
 
 # XAI
 sh ./config/hf_get_all.sh
@@ -47,6 +48,10 @@ python model_creation/main.py --env config/xai/.env.v1.3 --task xai
 # model 1.4
 python model_creation/main.py --env config/test/.env.v1.4 --task test
 python model_creation/main.py --env config/xai/.env.v1.4 --task xai
+
+# model 1.5 
+python model_creation/main.py --env config/test/.env.v1.5 --task test
+python model_creation/main.py --env config/xai/.env.v1.5 --task xai
 
 # Foundation Benchmark (MobileSAM vs Custom UNET)
 python model_creation/main.py --env config/foundation/.env.foundation --task foundation
